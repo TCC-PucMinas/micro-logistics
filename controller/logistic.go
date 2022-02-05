@@ -60,7 +60,7 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	res.Destiny.Lng = googleServie.Destiny.Lng
 
 	res.Duration = string(googleServie.Duration)
-	res.HumanReadable = googleServie.HumanReadable)
+	res.HumanReadable = googleServie.HumanReadable
 	res.Meters = string(googleServie.Meters)
 
 	return res, nil

@@ -19,7 +19,7 @@ type Client struct {
 	Phone string `json:"phone"`
 }
 
-func setRedisCacheClientGetById(client Client) error {
+func setRedisCacheClientGetById(client *Client) error {
 	db := db.ConnectDatabaseRedis()
 
 	json, err := json.Marshal(client)
@@ -32,7 +32,7 @@ func setRedisCacheClientGetById(client Client) error {
 	return db.Set(key, json, 1*time.Hour).Err()
 }
 
-func getRedisCacheGetOneById(id string) (Client, error) {
+func getClientRedisCacheGetOneById(id string) (Client, error) {
 	client := Client{}
 
 	redis := db.ConnectDatabaseRedis()
@@ -52,11 +52,9 @@ func getRedisCacheGetOneById(id string) (Client, error) {
 	return client, nil
 }
 
-
-
 func (client *Client) GetById(idClient string) error {
 
-	if c, err := getRedisCacheGetOneById(idClient); err == nil {
+	if c, err := getClientRedisCacheGetOneById(idClient); err == nil {
 		client = &c
 		return nil
 	}
@@ -72,7 +70,7 @@ func (client *Client) GetById(idClient string) error {
 	}
 
 	for requestConfig.Next() {
-		var id, name, email, phone, string
+		var id, name, email, phone string
 		_ = requestConfig.Scan(&id, &email, &phone)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		client.Id = i64
@@ -81,11 +79,11 @@ func (client *Client) GetById(idClient string) error {
 		client.Phone = phone
 	}
 
-	if user.Id == 0 {
+	if client.Id == 0 {
 		return errors.New("Not found key")
 	}
 
-	_ = setRedisCacheClientGetById(user)
+	_ = setRedisCacheClientGetById(client)
 
-	return  nil
+	return nil
 }

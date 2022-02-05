@@ -13,10 +13,10 @@ RUN apk --no-cache add ca-certificates
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o micro-email
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o micro-logistics
 
 # final stage
 FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /app/micro-email /app/
-ENTRYPOINT ["/app/micro-email"]
+COPY --from=builder /app/micro-logistics /app/
+ENTRYPOINT ["/app/micro-logistics"]

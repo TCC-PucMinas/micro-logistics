@@ -1,5 +1,14 @@
 package model
 
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/TCC-PucMinas/micro-logistics/db"
+)
 
 var keyCarryingRedisGetById = "key-carrying-get-by-id"
 
@@ -10,11 +19,10 @@ type Carrying struct {
 	Lng  string `json:"lng"`
 }
 
-
-func setRedisCacheCarryingGetById(client Client) error {
+func setRedisCacheCarryingGetById(carry *Carrying) error {
 	db := db.ConnectDatabaseRedis()
 
-	json, err := json.Marshal(client)
+	json, err := json.Marshal(carry)
 
 	if err != nil {
 		return err
@@ -24,8 +32,7 @@ func setRedisCacheCarryingGetById(client Client) error {
 	return db.Set(key, json, 1*time.Hour).Err()
 }
 
-
-func getRedisCacheGetOneById(id string) (Carrying, error) {
+func getCarryingRedisCacheGetOneById(id string) (Carrying, error) {
 	carrying := Carrying{}
 
 	redis := db.ConnectDatabaseRedis()
@@ -45,11 +52,9 @@ func getRedisCacheGetOneById(id string) (Carrying, error) {
 	return carrying, nil
 }
 
-
-
 func (carrying *Carrying) GetById(id string) error {
 
-	if c, err := getRedisCacheGetOneById(id); err == nil {
+	if c, err := getCarryingRedisCacheGetOneById(id); err == nil {
 		carrying = &c
 		return nil
 	}
@@ -65,7 +70,7 @@ func (carrying *Carrying) GetById(id string) error {
 	}
 
 	for requestConfig.Next() {
-		var id, name, lat, lng, string
+		var id, name, lat, lng string
 		_ = requestConfig.Scan(&id, &name, &lat, &lng)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		carrying.Id = i64
@@ -75,7 +80,7 @@ func (carrying *Carrying) GetById(id string) error {
 	}
 
 	if carrying.Id == 0 {
-		return uerrors.New("Not found key")
+		return errors.New("Not found key")
 	}
 
 	_ = setRedisCacheCarryingGetById(carrying)
