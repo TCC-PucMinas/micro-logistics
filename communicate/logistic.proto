@@ -20,6 +20,25 @@ message CalculateResponse {
   string HumanReadable = 5;
 }
 
+message ValidateCarryingRequest {
+  string idCarring = 1;
+}
+
+message ValidateCarryingResponse {
+  bool valid = 1;
+}
+
+message ValidateClientRequest {
+  string idClient = 1;
+}
+
+message ValidateClientResponse {
+  bool valid = 1;
+}
+
+
 service LogisticCommunicate {
   rpc CalculateLogistic (CalulateRequest) returns (CalculateResponse) {};
+  rpc ValidateCarringById (ValidateCarryingRequest) returns (ValidateCarryingResponse) {};
+  rpc ValidateClientById (ValidateClientRequest) returns (ValidateClientResponse) {};
 }

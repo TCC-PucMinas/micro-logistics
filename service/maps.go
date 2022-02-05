@@ -16,11 +16,11 @@ type LatAndLng struct {
 }
 
 type Calculate struct {
-	Origin        LatAndLng     `json:"origin`
-	Destiny       LatAndLng     `json:"destiny`
-	HumanReadable string        `json:"human_readable`
-	Meters        int           `json:"meters`
-	Duration      time.Duration `json:"duration"`
+	Origin        LatAndLng
+	Destiny       LatAndLng
+	HumanReadable string
+	Meters        int
+	Duration      time.Duration
 }
 
 func (calc *Calculate) CalculateRoute() error {

@@ -1,14 +1,14 @@
 package model
 
+
+var keyCarryingRedisGetById = "key-carrying-get-by-id"
+
 type Carrying struct {
 	Id   int64  `json:"id"`
 	Name string `json:"name"`
 	Lat  string `json:"lat"`
 	Lng  string `json:"lng"`
 }
-
-
-var keyCarryingRedisGetById = "key-carrying-get-by-id"
 
 
 func setRedisCacheCarryingGetById(client Client) error {
