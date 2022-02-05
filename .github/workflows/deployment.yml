@@ -1,0 +1,30 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+      - uses: actions/checkout@v2
+      - name: upload image to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          repo: micro-logistics
+          tags: ${{ steps.vars.outputs.tag }}
+          registry: ${{ secrets.AWS_REPOSITORY }}
+          region: ${{ secrets.AWS_REGION }}
