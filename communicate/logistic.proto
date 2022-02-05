@@ -7,9 +7,17 @@ message CalulateRequest {
   string idClient = 2;
 }
 
+message LatAndLong {
+  string lat = 1;
+  string lng = 2;
+}
+
 message CalculateResponse {
-  string id = 1;
-  string name  = 2;
+  LatAndLong origin = 1;
+  LatAndLong destiny  = 2;
+  string meters = 3;
+  string duration = 4;
+  string HumanReadable = 5;
 }
 
 service LogisticCommunicate {

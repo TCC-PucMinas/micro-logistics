@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 	"fmt"
-	"log"
+	"time"
 
 	"googlemaps.github.io/maps"
 )
 
-var keyGoogle = "AIzaSyBPBrahfw9qmxMQAtTtDI54qBpjgF4I6wA"
+var keyGoogle = "AIzaSyCeajRVwvBKwxyQRRyMHOx4zVWzk1ETFuU"
 
 type LatAndLng struct {
 	Lat string `json:"lat"`
@@ -16,8 +16,11 @@ type LatAndLng struct {
 }
 
 type Calculate struct {
-	Origin  LatAndLng `json:"lat_and_lng_origin`
-	Destiny LatAndLng `json:"lat_and_lng_destiny`
+	Origin        LatAndLng     `json:"origin`
+	Destiny       LatAndLng     `json:"destiny`
+	HumanReadable string        `json:"human_readable`
+	Meters        int           `json:"meters`
+	Duration      time.Duration `json:"duration"`
 }
 
 func (calc *Calculate) CalculateRoute() error {
@@ -29,16 +32,22 @@ func (calc *Calculate) CalculateRoute() error {
 	}
 
 	r := &maps.DirectionsRequest{
-		Origin:      "Sydney",
-		Destination: "Perth",
+		Origin:      fmt.Sprintf("%v, %v", calc.Origin.Lat, calc.Origin.Lng),
+		Destination: fmt.Sprintf("%v, %v", calc.Destiny.Lat, calc.Destiny.Lng),
 	}
 
-	route, _, err := c.Directions(context.Background(), r)
+	rout, _, err := c.Directions(context.Background(), r)
 
 	if err != nil {
-		log.Fatalf("fatal error: %s", err)
+		return err
 	}
 
-	fmt.Println(route)
+	for _, v := range rout {
+		for _, a := range v.Legs {
+			calc.Meters = a.Meters
+			calc.HumanReadable = a.HumanReadable
+			calc.Duration = a.Duration
+		}
+	}
 	return nil
 }

@@ -49,7 +49,7 @@ create table carryings (
     `created_at` datetime default now()
 );
 
-insert into carryings (name) values ('Transportadora example');
+insert into carryings (name, lat, lng) values ('Transportadora example', '-9.752860', '-36.665240');
 
 create table trucks (
     id int unsigned auto_increment primary key,
