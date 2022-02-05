@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  nats-server:
+    image: nats
+    restart: always
+    ports:
+      - 4222:4222
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_register
+    ports:
+      - "3306:3306"
