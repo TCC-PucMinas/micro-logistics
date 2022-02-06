@@ -71,7 +71,7 @@ func (client *Client) GetById(idClient string) error {
 
 	for requestConfig.Next() {
 		var id, name, email, phone string
-		_ = requestConfig.Scan(&id, &email, &phone)
+		_ = requestConfig.Scan(&id, &name, &email, &phone)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		client.Id = i64
 		client.Name = name

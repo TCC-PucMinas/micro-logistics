@@ -67,7 +67,7 @@ func (destination *Destination) DestinationGetByClientId(idClient string) error 
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, street, district, city, country, state, number, lat, lng from destinations where client_id = ? limit 1;`
+	query := `select id, street, district, city, country, state, number, lat, lng from destinations where id_client = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, idClient)
 

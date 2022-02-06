@@ -11,8 +11,8 @@ import (
 var keyGoogle = "AIzaSyCeajRVwvBKwxyQRRyMHOx4zVWzk1ETFuU"
 
 type LatAndLng struct {
-	Lat string `json:"lat"`
-	Lng string `json:"lng"`
+	Lat string
+	Lng string
 }
 
 type Calculate struct {

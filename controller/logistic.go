@@ -3,6 +3,8 @@ package controller
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
 
 	"github.com/TCC-PucMinas/micro-logistics/communicate"
 	model "github.com/TCC-PucMinas/micro-logistics/models"
@@ -33,6 +35,7 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	destination := model.Destination{}
 
 	if err := destination.DestinationGetByClientId(request.IdClient); err != nil {
+		log.Println("err", err)
 		return res, errors.New("Id client invalid!")
 	}
 
@@ -53,15 +56,21 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 		return res, errors.New("Error in calculate route google maps!")
 	}
 
-	res.Origin.Lat = googleServie.Origin.Lat
-	res.Origin.Lng = googleServie.Origin.Lng
+	res.Origin = &communicate.LatAndLong{
+		Lat: googleServie.Origin.Lat,
+		Lng: googleServie.Origin.Lng,
+	}
+	res.Destiny = &communicate.LatAndLong{
+		Lat: googleServie.Destiny.Lat,
+		Lng: googleServie.Destiny.Lng,
+	}
 
-	res.Destiny.Lat = googleServie.Destiny.Lat
-	res.Destiny.Lng = googleServie.Destiny.Lng
+	res.Duration = int64(googleServie.Duration)
 
-	res.Duration = string(googleServie.Duration)
+	h, _ := time.ParseDuration(googleServie.Duration.String())
+	res.Duration = int64(h.Minutes())
 	res.HumanReadable = googleServie.HumanReadable
-	res.Meters = string(googleServie.Meters)
+	res.Meters = int64(googleServie.Meters)
 
 	return res, nil
 }
@@ -73,7 +82,7 @@ func (s *LogisticServer) ValidateCarringById(ctx context.Context, request *commu
 	carry := model.Carrying{}
 
 	if err := carry.GetById(request.IdCarring); err != nil {
-		return res, errors.New("Id invalid!")
+		return res, errors.New("Carrying Id invalid!")
 	}
 
 	res.Valid = true
@@ -88,7 +97,7 @@ func (s *LogisticServer) ValidateClientById(ctx context.Context, request *commun
 	client := model.Client{}
 
 	if err := client.GetById(request.IdClient); err != nil {
-		return res, errors.New("Id invalid!")
+		return res, errors.New("Client Id invalid!")
 	}
 
 	res.Valid = true

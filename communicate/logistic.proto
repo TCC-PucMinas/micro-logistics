@@ -15,8 +15,8 @@ message LatAndLong {
 message CalculateResponse {
   LatAndLong origin = 1;
   LatAndLong destiny  = 2;
-  string meters = 3;
-  string duration = 4;
+  int64 meters = 3;
+  int64 duration = 4;
   string HumanReadable = 5;
 }
 
