@@ -37,8 +37,37 @@ message ValidateClientResponse {
 }
 
 
+message User {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+}
+
+message Data {
+  repeated User user = 1;
+}
+
+message ClientListAllRequest {
+  int64 page = 1;
+  int64 limit = 2;
+  string name = 3;
+}
+
+message ClientListAllResponse {
+  Data data = 1;
+  int64 page = 2;
+  int64 limit = 3;
+}
+
+/*
+  - Criar uma listar com filtro dos clientes
+  - Criar uma listagem com filtro dos motorista
+*/
+
 service LogisticCommunicate {
   rpc CalculateLogistic (CalulateRequest) returns (CalculateResponse) {};
   rpc ValidateCarringById (ValidateCarryingRequest) returns (ValidateCarryingResponse) {};
   rpc ValidateClientById (ValidateClientRequest) returns (ValidateClientResponse) {};
+  rpc ClientListAll (ClientListAllRequest) returns (ClientListAllResponse) {};
 }
