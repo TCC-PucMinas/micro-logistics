@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/TCC-PucMinas/micro-logistics/communicate"
-	"github.com/TCC-PucMinas/micro-logistics/controller"
-	"github.com/TCC-PucMinas/micro-logistics/service"
 	"google.golang.org/grpc"
+	"micro-logistic/communicate"
+	"micro-logistic/controller"
+	"micro-logistic/service"
 )
 
 func main() {

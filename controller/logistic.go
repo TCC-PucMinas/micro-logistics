@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/TCC-PucMinas/micro-logistics/communicate"
-	model "github.com/TCC-PucMinas/micro-logistics/models"
-	"github.com/TCC-PucMinas/micro-logistics/service"
+	"micro-logistic/communicate"
+	model "micro-logistic/models"
+	"micro-logistic/service"
 )
 
 type LogisticServer struct {

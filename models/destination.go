@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TCC-PucMinas/micro-logistics/db"
+	"micro-logistic/db"
 )
 
 type Destination struct {
