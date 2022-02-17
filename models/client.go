@@ -10,7 +10,10 @@ import (
 	"micro-logistic/db"
 )
 
-var keyClientRedisGetById = "key-client-get-by-id"
+var (
+	keyClientRedisGetById          = "key-client-get-by-id"
+	keyClientRedisGetByNameAndPage = "key-client-get-by-name-and-page"
+)
 
 type Client struct {
 	Id    int64  `json:"id"`
@@ -20,16 +23,16 @@ type Client struct {
 }
 
 func setRedisCacheClientGetById(client *Client) error {
-	db := db.ConnectDatabaseRedis()
+	redis := db.ConnectDatabaseRedis()
 
-	json, err := json.Marshal(client)
+	marshal, err := json.Marshal(client)
 
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("%v - %v", keyClientRedisGetById, json)
+	key := fmt.Sprintf("%v - %v", keyClientRedisGetById, marshal)
 
-	return db.Set(key, json, 1*time.Hour).Err()
+	return redis.Set(key, marshal, 1*time.Hour).Err()
 }
 
 func getClientRedisCacheGetOneById(id string) (Client, error) {
@@ -86,4 +89,75 @@ func (client *Client) GetById(idClient string) error {
 	_ = setRedisCacheClientGetById(client)
 
 	return nil
+}
+
+func setRedisCacheClientGetByName(name string, page, limit int64, clients []Client) error {
+	redis := db.ConnectDatabaseRedis()
+
+	marshal, err := json.Marshal(clients)
+
+	if err != nil {
+		return err
+	}
+
+	key := fmt.Sprintf("%v - %v -%v -%v", keyClientRedisGetByNameAndPage, name, page, limit)
+
+	return redis.Set(key, marshal, 1*time.Hour).Err()
+}
+
+func getClientRedisCacheGetOneByName(name string, page, limit int64) ([]Client, error) {
+	var clients []Client
+
+	redis := db.ConnectDatabaseRedis()
+
+	key := fmt.Sprintf("%v - %v -%v -%v", keyClientRedisGetByNameAndPage, name, page, limit)
+
+	value, err := redis.Get(key).Result()
+
+	if err != nil {
+		return clients, err
+	}
+
+	if err := json.Unmarshal([]byte(value), &clients); err != nil {
+		return clients, err
+	}
+
+	return clients, nil
+}
+
+func (client *Client) GetByNameLike(name string, page, limit int64) ([]Client, error) {
+	var clientArray []Client
+
+	if c, err := getClientRedisCacheGetOneByName(name, page, limit); err == nil {
+		clientArray = c
+		return clientArray, nil
+	}
+
+	sql := db.ConnectDatabase()
+
+	query := `select id, name, email, phone from clients where name like %?% LIMIT ? OFFSET ?;`
+
+	requestConfig, err := sql.Query(query, name, page, limit)
+
+	if err != nil {
+		return clientArray, err
+	}
+
+	for requestConfig.Next() {
+		var clientGet Client
+		var id, name, email, phone string
+		_ = requestConfig.Scan(&id, &name, &email, &phone)
+		i64, _ := strconv.ParseInt(id, 10, 64)
+		clientGet.Id = i64
+		clientGet.Name = name
+		clientGet.Email = email
+		clientGet.Phone = phone
+
+		clientArray = append(clientArray, clientGet)
+
+	}
+
+	_ = setRedisCacheClientGetByName(name, page, limit, clientArray)
+
+	return clientArray, nil
 }

@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc"
 	"micro-logistic/communicate"
 	"micro-logistic/controller"
-	"micro-logistic/service"
 )
 
 func main() {
@@ -22,14 +21,10 @@ func main() {
 		panic(err)
 	}
 
-	calc := service.Calculate{}
-
-	calc.CalculateRoute()
-
 	grpcServer := grpc.NewServer()
 	communicate.RegisterLogisticCommunicateServer(grpcServer, &controller.LogisticServer{})
 
-	fmt.Println("[x] - Server register listen...")
+	fmt.Printf("[x] - Server logistic listen http://localhost:%v", port)
 
 	if err := grpcServer.Serve(listener); err != nil {
 		panic(err.Error())

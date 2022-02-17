@@ -104,3 +104,25 @@ func (s *LogisticServer) ValidateClientById(ctx context.Context, request *commun
 
 	return res, nil
 }
+
+func (s *LogisticServer) ClientListAll(ctx context.Context, request *communicate.ClientListAllRequest) (*communicate.ClientListAllResponse, error) {
+	res := &communicate.ClientListAllResponse{}
+
+	var client model.Client
+
+	clients, err := client.GetByNameLike(request.Name, request.Page, request.Limit)
+	if err != nil {
+		return res, err
+	}
+
+	data := &communicate.Data{}
+	for _, c := range clients {
+		user := &communicate.Client{}
+		user.Id = c.Id
+		user.Name = c.Name
+		user.Email = c.Email
+		data.Client = append(data.Client, user)
+	}
+
+	return res, nil
+}

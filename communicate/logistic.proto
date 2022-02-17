@@ -37,7 +37,7 @@ message ValidateClientResponse {
 }
 
 
-message User {
+message Client {
   int64 id = 1;
   string name = 2;
   string email = 3;
@@ -45,7 +45,7 @@ message User {
 }
 
 message Data {
-  repeated User user = 1;
+  repeated Client client = 1;
 }
 
 message ClientListAllRequest {
@@ -61,7 +61,7 @@ message ClientListAllResponse {
 }
 
 /*
-  - Criar uma listar com filtro dos clientes
+  - Criar uma listar com filtro dos clientes - (ok)
   - Criar uma listagem com filtro dos motorista
 */
 
