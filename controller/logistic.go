@@ -110,7 +110,7 @@ func (s *LogisticServer) ClientListAll(ctx context.Context, request *communicate
 
 	var client model.Client
 
-	clients, err := client.GetByNameLike(request.Name, request.Page, request.Limit)
+	clients, total, err := client.GetByNameLike(request.Name, request.Page, request.Limit)
 	if err != nil {
 		return res, err
 	}
@@ -121,8 +121,14 @@ func (s *LogisticServer) ClientListAll(ctx context.Context, request *communicate
 		user.Id = c.Id
 		user.Name = c.Name
 		user.Email = c.Email
+		user.Phone = c.Phone
 		data.Client = append(data.Client, user)
 	}
 
+	res.Total = total
+	res.Page = request.Page
+	res.Limit = request.Limit
+
+	res.Data = data
 	return res, nil
 }

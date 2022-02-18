@@ -1,14 +1,11 @@
 package db
 
 import (
-	"os"
-
 	"github.com/go-redis/redis"
 )
 
 var instanceDBRedis *redis.Client
 
-// ConnectDatabase - get connection database
 func ConnectDatabaseRedis() *redis.Client {
 
 	if instanceDBRedis != nil {
@@ -19,8 +16,8 @@ func ConnectDatabaseRedis() *redis.Client {
 
 	if instanceDBRedis == nil {
 		client := redis.NewClient(&redis.Options{
-			Addr:     os.Getenv("DB_REDIS_HOST"),     // "localhost:6379"
-			Password: os.Getenv("DB_REDIS_PASSWORD"), // SUASENHA,
+			Addr:     "localhost:6379", // os.Getenv("DB_REDIS_HOST"),
+			Password: "SUASENHA",       // os.Getenv("DB_REDIS_PASSWORD"),
 			DB:       0,
 		})
 

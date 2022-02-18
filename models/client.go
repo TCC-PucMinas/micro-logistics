@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"micro-logistic/helpers"
 	"strconv"
 	"time"
 
@@ -125,28 +126,39 @@ func getClientRedisCacheGetOneByName(name string, page, limit int64) ([]Client, 
 	return clients, nil
 }
 
-func (client *Client) GetByNameLike(name string, page, limit int64) ([]Client, error) {
+func (client *Client) GetByNameLike(name string, page, limit int64) ([]Client, int64, error) {
 	var clientArray []Client
+	var total int64
 
 	if c, err := getClientRedisCacheGetOneByName(name, page, limit); err == nil {
 		clientArray = c
-		return clientArray, nil
+		return clientArray, total, nil
 	}
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, name, email, phone from clients where name like %?% LIMIT ? OFFSET ?;`
+	name = "%" + name + "%"
 
-	requestConfig, err := sql.Query(query, name, page, limit)
+	paginate := helpers.Paginate{
+		Page:  page,
+		Limit: limit,
+	}
+
+	paginate.PaginateMounted()
+	paginate.MountedQuery("clients")
+
+	query := fmt.Sprintf("select id, name, email, phone, %v from clients where name like ? LIMIT ? OFFSET ?;", paginate.Query)
+
+	requestConfig, err := sql.Query(query, name, paginate.Limit, paginate.Page)
 
 	if err != nil {
-		return clientArray, err
+		return clientArray, total, err
 	}
 
 	for requestConfig.Next() {
 		var clientGet Client
 		var id, name, email, phone string
-		_ = requestConfig.Scan(&id, &name, &email, &phone)
+		err = requestConfig.Scan(&id, &name, &email, &phone, &total)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		clientGet.Id = i64
 		clientGet.Name = name
@@ -154,10 +166,9 @@ func (client *Client) GetByNameLike(name string, page, limit int64) ([]Client, e
 		clientGet.Phone = phone
 
 		clientArray = append(clientArray, clientGet)
-
 	}
 
 	_ = setRedisCacheClientGetByName(name, page, limit, clientArray)
 
-	return clientArray, nil
+	return clientArray, total, nil
 }
