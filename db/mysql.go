@@ -2,13 +2,11 @@ package db
 
 import (
 	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var instanceDB *sql.DB
 
-// ConnectDatabase - get connection database
 func ConnectDatabase() *sql.DB {
 	//dbUser := os.Getenv("DB_USERNAME")
 	//dbPassword := os.Getenv("DB_PASSWORD")

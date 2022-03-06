@@ -1,4 +1,4 @@
--- drop database db_logistics;
+drop database if exists db_logistics;
 
 CREATE DATABASE db_logistics CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 use db_logistics;
@@ -34,23 +34,49 @@ create table products (
     id int unsigned auto_increment primary key,
     name varchar(255) not null,
     price decimal(10, 2) not null,
+    nfe text not null,
     id_client int unsigned not null,
 	FOREIGN KEY (id_client) REFERENCES clients(id),
     `created_at` datetime default now()
 );
 
-insert into products (`name`, price, id_client) values ('Iphone 12', 4900.00, 1);
+insert into products (`name`, price, nfe, id_client) values ('Iphone 12', 4900.00, '20320131203213021301321', 1);
+
 
 
 create table carryings (
-    id int unsigned auto_increment primary key,
-    name varchar(255) not null,
-    lat varchar (255) not null,
-    lng varchar (255) not null,
-    `created_at` datetime default now()
+   id int unsigned auto_increment primary key,
+   name varchar(255) not null,
+   street varchar(255) not null,
+   district varchar(255) not null,
+   city varchar(255) not null,
+   country varchar(255) not null,
+   state varchar(255) not null,
+   number varchar(255) not null,
+   lat varchar (255) not null,
+   lng varchar (255) not null,
+   `created_at` datetime default now()
 );
 
-insert into carryings (name, lat, lng) values ('Transportadora example', '-9.752860', '-36.665240');
+insert into carryings (name, street, district, city, country, state, number, lat, lng) values ('Transportadora example', 'Padre josé alves', 'Salesianos', 'Juazeiro do Norte', 'Brasil', 'Ceará', '790', '-7.205440', '-39.324280');
+
+create table deposits(
+     id int unsigned auto_increment primary key,
+     name varchar(255) not null,
+     street varchar(255) not null,
+     district varchar(255) not null,
+     city varchar(255) not null,
+     country varchar(255) not null,
+     state varchar(255) not null,
+     number varchar(255) not null,
+     lat varchar (255) not null,
+     lng varchar (255) not null,
+     id_carry int unsigned not null,
+     FOREIGN KEY (id_carry) REFERENCES carryings(id)
+);
+
+insert into deposits (name,street, district, city, country, state, number, lat, lng, id_carry) values ('deposito exemplo', 'Padre josé alves', 'Salesianos', 'Juazeiro do Norte', 'Brasil', 'Ceará', '790', '-7.205440', '-39.324280', 1);
+
 
 create table trucks (
     id int unsigned auto_increment primary key,
@@ -58,10 +84,12 @@ create table trucks (
     model varchar(255) not null,
     year varchar(255) not null,
     plate varchar(255) not null,
+    id_carry int unsigned not null,
+    FOREIGN KEY (id_carry) REFERENCES carryings(id),
     `created_at` datetime default now()
 );
 
-insert into trucks (brand, model, year, plate) values ('Mercedes-Benz', 'Accelo', '2021-2022', 'PNO-7672');
+insert into trucks (brand, model, year, plate, id_carry) values ('Mercedes-Benz', 'Accelo', '2021-2022', 'PNO-7672', 1);
 
 create table drivers (
     id int unsigned auto_increment primary key,

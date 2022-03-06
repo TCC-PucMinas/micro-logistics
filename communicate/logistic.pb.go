@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.19.4
-// source: logistic.proto
+// source: communicate/logistic.proto
 
 package communicate
 
@@ -29,14 +29,14 @@ type CalulateRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IdCarring string `protobuf:"bytes,1,opt,name=idCarring,proto3" json:"idCarring,omitempty"`
-	IdClient  string `protobuf:"bytes,2,opt,name=idClient,proto3" json:"idClient,omitempty"`
+	IdCarring int64 `protobuf:"varint,1,opt,name=idCarring,proto3" json:"idCarring,omitempty"`
+	IdClient  int64 `protobuf:"varint,2,opt,name=idClient,proto3" json:"idClient,omitempty"`
 }
 
 func (x *CalulateRequest) Reset() {
 	*x = CalulateRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[0]
+		mi := &file_communicate_logistic_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -49,7 +49,7 @@ func (x *CalulateRequest) String() string {
 func (*CalulateRequest) ProtoMessage() {}
 
 func (x *CalulateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[0]
+	mi := &file_communicate_logistic_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -62,21 +62,21 @@ func (x *CalulateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalulateRequest.ProtoReflect.Descriptor instead.
 func (*CalulateRequest) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{0}
+	return file_communicate_logistic_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CalulateRequest) GetIdCarring() string {
+func (x *CalulateRequest) GetIdCarring() int64 {
 	if x != nil {
 		return x.IdCarring
 	}
-	return ""
+	return 0
 }
 
-func (x *CalulateRequest) GetIdClient() string {
+func (x *CalulateRequest) GetIdClient() int64 {
 	if x != nil {
 		return x.IdClient
 	}
-	return ""
+	return 0
 }
 
 type LatAndLong struct {
@@ -91,7 +91,7 @@ type LatAndLong struct {
 func (x *LatAndLong) Reset() {
 	*x = LatAndLong{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[1]
+		mi := &file_communicate_logistic_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -104,7 +104,7 @@ func (x *LatAndLong) String() string {
 func (*LatAndLong) ProtoMessage() {}
 
 func (x *LatAndLong) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[1]
+	mi := &file_communicate_logistic_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -117,7 +117,7 @@ func (x *LatAndLong) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LatAndLong.ProtoReflect.Descriptor instead.
 func (*LatAndLong) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{1}
+	return file_communicate_logistic_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *LatAndLong) GetLat() string {
@@ -149,7 +149,7 @@ type CalculateResponse struct {
 func (x *CalculateResponse) Reset() {
 	*x = CalculateResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[2]
+		mi := &file_communicate_logistic_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -162,7 +162,7 @@ func (x *CalculateResponse) String() string {
 func (*CalculateResponse) ProtoMessage() {}
 
 func (x *CalculateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[2]
+	mi := &file_communicate_logistic_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -175,7 +175,7 @@ func (x *CalculateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateResponse.ProtoReflect.Descriptor instead.
 func (*CalculateResponse) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{2}
+	return file_communicate_logistic_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CalculateResponse) GetOrigin() *LatAndLong {
@@ -218,13 +218,13 @@ type ValidateCarryingRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IdCarring string `protobuf:"bytes,1,opt,name=idCarring,proto3" json:"idCarring,omitempty"`
+	IdCarring int64 `protobuf:"varint,1,opt,name=idCarring,proto3" json:"idCarring,omitempty"`
 }
 
 func (x *ValidateCarryingRequest) Reset() {
 	*x = ValidateCarryingRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[3]
+		mi := &file_communicate_logistic_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -237,7 +237,7 @@ func (x *ValidateCarryingRequest) String() string {
 func (*ValidateCarryingRequest) ProtoMessage() {}
 
 func (x *ValidateCarryingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[3]
+	mi := &file_communicate_logistic_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -250,14 +250,14 @@ func (x *ValidateCarryingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateCarryingRequest.ProtoReflect.Descriptor instead.
 func (*ValidateCarryingRequest) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{3}
+	return file_communicate_logistic_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ValidateCarryingRequest) GetIdCarring() string {
+func (x *ValidateCarryingRequest) GetIdCarring() int64 {
 	if x != nil {
 		return x.IdCarring
 	}
-	return ""
+	return 0
 }
 
 type ValidateCarryingResponse struct {
@@ -271,7 +271,7 @@ type ValidateCarryingResponse struct {
 func (x *ValidateCarryingResponse) Reset() {
 	*x = ValidateCarryingResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[4]
+		mi := &file_communicate_logistic_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -284,7 +284,7 @@ func (x *ValidateCarryingResponse) String() string {
 func (*ValidateCarryingResponse) ProtoMessage() {}
 
 func (x *ValidateCarryingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[4]
+	mi := &file_communicate_logistic_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -297,7 +297,7 @@ func (x *ValidateCarryingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateCarryingResponse.ProtoReflect.Descriptor instead.
 func (*ValidateCarryingResponse) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{4}
+	return file_communicate_logistic_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ValidateCarryingResponse) GetValid() bool {
@@ -307,485 +307,92 @@ func (x *ValidateCarryingResponse) GetValid() bool {
 	return false
 }
 
-type ValidateClientRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
+var File_communicate_logistic_proto protoreflect.FileDescriptor
 
-	IdClient string `protobuf:"bytes,1,opt,name=idClient,proto3" json:"idClient,omitempty"`
-}
-
-func (x *ValidateClientRequest) Reset() {
-	*x = ValidateClientRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ValidateClientRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateClientRequest) ProtoMessage() {}
-
-func (x *ValidateClientRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ValidateClientRequest.ProtoReflect.Descriptor instead.
-func (*ValidateClientRequest) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ValidateClientRequest) GetIdClient() string {
-	if x != nil {
-		return x.IdClient
-	}
-	return ""
-}
-
-type ValidateClientResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Valid bool `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
-}
-
-func (x *ValidateClientResponse) Reset() {
-	*x = ValidateClientResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ValidateClientResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateClientResponse) ProtoMessage() {}
-
-func (x *ValidateClientResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ValidateClientResponse.ProtoReflect.Descriptor instead.
-func (*ValidateClientResponse) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ValidateClientResponse) GetValid() bool {
-	if x != nil {
-		return x.Valid
-	}
-	return false
-}
-
-type Client struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id    int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name  string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Email string `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Phone string `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
-}
-
-func (x *Client) Reset() {
-	*x = Client{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Client) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Client) ProtoMessage() {}
-
-func (x *Client) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Client.ProtoReflect.Descriptor instead.
-func (*Client) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *Client) GetId() int64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *Client) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *Client) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *Client) GetPhone() string {
-	if x != nil {
-		return x.Phone
-	}
-	return ""
-}
-
-type Data struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Client []*Client `protobuf:"bytes,1,rep,name=client,proto3" json:"client,omitempty"`
-}
-
-func (x *Data) Reset() {
-	*x = Data{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Data) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Data) ProtoMessage() {}
-
-func (x *Data) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Data.ProtoReflect.Descriptor instead.
-func (*Data) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *Data) GetClient() []*Client {
-	if x != nil {
-		return x.Client
-	}
-	return nil
-}
-
-type ClientListAllRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Page  int64  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
-	Limit int64  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
-	Name  string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (x *ClientListAllRequest) Reset() {
-	*x = ClientListAllRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ClientListAllRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ClientListAllRequest) ProtoMessage() {}
-
-func (x *ClientListAllRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ClientListAllRequest.ProtoReflect.Descriptor instead.
-func (*ClientListAllRequest) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *ClientListAllRequest) GetPage() int64 {
-	if x != nil {
-		return x.Page
-	}
-	return 0
-}
-
-func (x *ClientListAllRequest) GetLimit() int64 {
-	if x != nil {
-		return x.Limit
-	}
-	return 0
-}
-
-func (x *ClientListAllRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type ClientListAllResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Data  *Data `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
-	Page  int64 `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
-	Limit int64 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
-	Total int64 `protobuf:"varint,4,opt,name=total,proto3" json:"total,omitempty"`
-}
-
-func (x *ClientListAllResponse) Reset() {
-	*x = ClientListAllResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_logistic_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ClientListAllResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ClientListAllResponse) ProtoMessage() {}
-
-func (x *ClientListAllResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_logistic_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ClientListAllResponse.ProtoReflect.Descriptor instead.
-func (*ClientListAllResponse) Descriptor() ([]byte, []int) {
-	return file_logistic_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *ClientListAllResponse) GetData() *Data {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-func (x *ClientListAllResponse) GetPage() int64 {
-	if x != nil {
-		return x.Page
-	}
-	return 0
-}
-
-func (x *ClientListAllResponse) GetLimit() int64 {
-	if x != nil {
-		return x.Limit
-	}
-	return 0
-}
-
-func (x *ClientListAllResponse) GetTotal() int64 {
-	if x != nil {
-		return x.Total
-	}
-	return 0
-}
-
-var File_logistic_proto protoreflect.FileDescriptor
-
-var file_logistic_proto_rawDesc = []byte{
-	0x0a, 0x0e, 0x6c, 0x6f, 0x67, 0x69, 0x73, 0x74, 0x69, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0x4b, 0x0a, 0x0f, 0x43, 0x61, 0x6c, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e,
-	0x67, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x30, 0x0a,
-	0x0a, 0x4c, 0x61, 0x74, 0x41, 0x6e, 0x64, 0x4c, 0x6f, 0x6e, 0x67, 0x12, 0x10, 0x0a, 0x03, 0x6c,
-	0x61, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x61, 0x74, 0x12, 0x10, 0x0a,
-	0x03, 0x6c, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x6e, 0x67, 0x22,
-	0xb9, 0x01, 0x0a, 0x11, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x23, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x4c, 0x61, 0x74, 0x41, 0x6e, 0x64, 0x4c, 0x6f,
-	0x6e, 0x67, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x25, 0x0a, 0x07, 0x64, 0x65,
-	0x73, 0x74, 0x69, 0x6e, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x4c, 0x61,
-	0x74, 0x41, 0x6e, 0x64, 0x4c, 0x6f, 0x6e, 0x67, 0x52, 0x07, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e,
-	0x79, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x03, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x75, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x24, 0x0a, 0x0d, 0x48, 0x75, 0x6d, 0x61, 0x6e, 0x52, 0x65,
-	0x61, 0x64, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x48, 0x75,
-	0x6d, 0x61, 0x6e, 0x52, 0x65, 0x61, 0x64, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x37, 0x0a, 0x17, 0x56,
-	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x79, 0x69, 0x6e, 0x67, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72,
-	0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72,
-	0x72, 0x69, 0x6e, 0x67, 0x22, 0x30, 0x0a, 0x18, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65,
-	0x43, 0x61, 0x72, 0x72, 0x79, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
-	0x05, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x22, 0x33, 0x0a, 0x15, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61,
-	0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x1a, 0x0a, 0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x2e, 0x0a, 0x16, 0x56,
-	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x69, 0x64, 0x22, 0x58, 0x0a, 0x06, 0x43,
-	0x6c, 0x69, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61,
-	0x69, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12,
-	0x14, 0x0a, 0x05, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x70, 0x68, 0x6f, 0x6e, 0x65, 0x22, 0x27, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1f, 0x0a,
-	0x06, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x07, 0x2e,
-	0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x06, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x54,
-	0x0a, 0x14, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x6c, 0x6c, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69,
-	0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x22, 0x72, 0x0a, 0x15, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4c, 0x69,
-	0x73, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x19, 0x0a,
-	0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x44, 0x61,
-	0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x6c, 0x69, 0x6d,
-	0x69, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x03, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x32, 0xab, 0x02, 0x0a, 0x13, 0x4c, 0x6f, 0x67,
-	0x69, 0x73, 0x74, 0x69, 0x63, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65,
-	0x12, 0x3b, 0x0a, 0x11, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x4c, 0x6f, 0x67,
-	0x69, 0x73, 0x74, 0x69, 0x63, 0x12, 0x10, 0x2e, 0x43, 0x61, 0x6c, 0x75, 0x6c, 0x61, 0x74, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4c, 0x0a,
-	0x13, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67,
-	0x42, 0x79, 0x49, 0x64, 0x12, 0x18, 0x2e, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43,
-	0x61, 0x72, 0x72, 0x79, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19,
+var file_communicate_logistic_proto_rawDesc = []byte{
+	0x0a, 0x1a, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65, 0x2f, 0x6c, 0x6f,
+	0x67, 0x69, 0x73, 0x74, 0x69, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x4b, 0x0a, 0x0f,
+	0x43, 0x61, 0x6c, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x1c, 0x0a, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67, 0x12, 0x1a, 0x0a,
+	0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x08, 0x69, 0x64, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x22, 0x30, 0x0a, 0x0a, 0x4c, 0x61, 0x74,
+	0x41, 0x6e, 0x64, 0x4c, 0x6f, 0x6e, 0x67, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x61, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x61, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x6e, 0x67,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x6e, 0x67, 0x22, 0xb9, 0x01, 0x0a, 0x11,
+	0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x23, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x0b, 0x2e, 0x4c, 0x61, 0x74, 0x41, 0x6e, 0x64, 0x4c, 0x6f, 0x6e, 0x67, 0x52, 0x06,
+	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x25, 0x0a, 0x07, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e,
+	0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x4c, 0x61, 0x74, 0x41, 0x6e, 0x64,
+	0x4c, 0x6f, 0x6e, 0x67, 0x52, 0x07, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x79, 0x12, 0x16, 0x0a,
+	0x06, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6d,
+	0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x24, 0x0a, 0x0d, 0x48, 0x75, 0x6d, 0x61, 0x6e, 0x52, 0x65, 0x61, 0x64, 0x61, 0x62,
+	0x6c, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x48, 0x75, 0x6d, 0x61, 0x6e, 0x52,
+	0x65, 0x61, 0x64, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x37, 0x0a, 0x17, 0x56, 0x61, 0x6c, 0x69, 0x64,
+	0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x79, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x69, 0x64, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67,
+	0x22, 0x30, 0x0a, 0x18, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72,
+	0x79, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x69, 0x64, 0x32, 0xa0, 0x01, 0x0a, 0x13, 0x4c, 0x6f, 0x67, 0x69, 0x73, 0x74, 0x69, 0x63, 0x43,
+	0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x3b, 0x0a, 0x11, 0x43, 0x61,
+	0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x4c, 0x6f, 0x67, 0x69, 0x73, 0x74, 0x69, 0x63, 0x12,
+	0x10, 0x2e, 0x43, 0x61, 0x6c, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x12, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4c, 0x0a, 0x13, 0x56, 0x61, 0x6c, 0x69, 0x64,
+	0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x69, 0x6e, 0x67, 0x42, 0x79, 0x49, 0x64, 0x12, 0x18,
 	0x2e, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x79, 0x69, 0x6e,
-	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x47, 0x0a, 0x12, 0x56,
-	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x42, 0x79, 0x49,
-	0x64, 0x12, 0x16, 0x2e, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65,
-	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x56, 0x61, 0x6c, 0x69,
-	0x64, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x12, 0x40, 0x0a, 0x0d, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4c, 0x69,
-	0x73, 0x74, 0x41, 0x6c, 0x6c, 0x12, 0x15, 0x2e, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4c, 0x69,
-	0x73, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x43,
-	0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75,
-	0x6e, 0x69, 0x63, 0x61, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x56, 0x61, 0x6c, 0x69, 0x64,
+	0x61, 0x74, 0x65, 0x43, 0x61, 0x72, 0x72, 0x79, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e,
+	0x69, 0x63, 0x61, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_logistic_proto_rawDescOnce sync.Once
-	file_logistic_proto_rawDescData = file_logistic_proto_rawDesc
+	file_communicate_logistic_proto_rawDescOnce sync.Once
+	file_communicate_logistic_proto_rawDescData = file_communicate_logistic_proto_rawDesc
 )
 
-func file_logistic_proto_rawDescGZIP() []byte {
-	file_logistic_proto_rawDescOnce.Do(func() {
-		file_logistic_proto_rawDescData = protoimpl.X.CompressGZIP(file_logistic_proto_rawDescData)
+func file_communicate_logistic_proto_rawDescGZIP() []byte {
+	file_communicate_logistic_proto_rawDescOnce.Do(func() {
+		file_communicate_logistic_proto_rawDescData = protoimpl.X.CompressGZIP(file_communicate_logistic_proto_rawDescData)
 	})
-	return file_logistic_proto_rawDescData
+	return file_communicate_logistic_proto_rawDescData
 }
 
-var file_logistic_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
-var file_logistic_proto_goTypes = []interface{}{
+var file_communicate_logistic_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_communicate_logistic_proto_goTypes = []interface{}{
 	(*CalulateRequest)(nil),          // 0: CalulateRequest
 	(*LatAndLong)(nil),               // 1: LatAndLong
 	(*CalculateResponse)(nil),        // 2: CalculateResponse
 	(*ValidateCarryingRequest)(nil),  // 3: ValidateCarryingRequest
 	(*ValidateCarryingResponse)(nil), // 4: ValidateCarryingResponse
-	(*ValidateClientRequest)(nil),    // 5: ValidateClientRequest
-	(*ValidateClientResponse)(nil),   // 6: ValidateClientResponse
-	(*Client)(nil),                   // 7: Client
-	(*Data)(nil),                     // 8: Data
-	(*ClientListAllRequest)(nil),     // 9: ClientListAllRequest
-	(*ClientListAllResponse)(nil),    // 10: ClientListAllResponse
 }
-var file_logistic_proto_depIdxs = []int32{
-	1,  // 0: CalculateResponse.origin:type_name -> LatAndLong
-	1,  // 1: CalculateResponse.destiny:type_name -> LatAndLong
-	7,  // 2: Data.client:type_name -> Client
-	8,  // 3: ClientListAllResponse.data:type_name -> Data
-	0,  // 4: LogisticCommunicate.CalculateLogistic:input_type -> CalulateRequest
-	3,  // 5: LogisticCommunicate.ValidateCarringById:input_type -> ValidateCarryingRequest
-	5,  // 6: LogisticCommunicate.ValidateClientById:input_type -> ValidateClientRequest
-	9,  // 7: LogisticCommunicate.ClientListAll:input_type -> ClientListAllRequest
-	2,  // 8: LogisticCommunicate.CalculateLogistic:output_type -> CalculateResponse
-	4,  // 9: LogisticCommunicate.ValidateCarringById:output_type -> ValidateCarryingResponse
-	6,  // 10: LogisticCommunicate.ValidateClientById:output_type -> ValidateClientResponse
-	10, // 11: LogisticCommunicate.ClientListAll:output_type -> ClientListAllResponse
-	8,  // [8:12] is the sub-list for method output_type
-	4,  // [4:8] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+var file_communicate_logistic_proto_depIdxs = []int32{
+	1, // 0: CalculateResponse.origin:type_name -> LatAndLong
+	1, // 1: CalculateResponse.destiny:type_name -> LatAndLong
+	0, // 2: LogisticCommunicate.CalculateLogistic:input_type -> CalulateRequest
+	3, // 3: LogisticCommunicate.ValidateCarringById:input_type -> ValidateCarryingRequest
+	2, // 4: LogisticCommunicate.CalculateLogistic:output_type -> CalculateResponse
+	4, // 5: LogisticCommunicate.ValidateCarringById:output_type -> ValidateCarryingResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_logistic_proto_init() }
-func file_logistic_proto_init() {
-	if File_logistic_proto != nil {
+func init() { file_communicate_logistic_proto_init() }
+func file_communicate_logistic_proto_init() {
+	if File_communicate_logistic_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_logistic_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_communicate_logistic_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CalulateRequest); i {
 			case 0:
 				return &v.state
@@ -797,7 +404,7 @@ func file_logistic_proto_init() {
 				return nil
 			}
 		}
-		file_logistic_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_communicate_logistic_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LatAndLong); i {
 			case 0:
 				return &v.state
@@ -809,7 +416,7 @@ func file_logistic_proto_init() {
 				return nil
 			}
 		}
-		file_logistic_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_communicate_logistic_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CalculateResponse); i {
 			case 0:
 				return &v.state
@@ -821,7 +428,7 @@ func file_logistic_proto_init() {
 				return nil
 			}
 		}
-		file_logistic_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_communicate_logistic_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ValidateCarryingRequest); i {
 			case 0:
 				return &v.state
@@ -833,80 +440,8 @@ func file_logistic_proto_init() {
 				return nil
 			}
 		}
-		file_logistic_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_communicate_logistic_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ValidateCarryingResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ValidateClientRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ValidateClientResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Client); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Data); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ClientListAllRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_logistic_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ClientListAllResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -922,20 +457,20 @@ func file_logistic_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_logistic_proto_rawDesc,
+			RawDescriptor: file_communicate_logistic_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_logistic_proto_goTypes,
-		DependencyIndexes: file_logistic_proto_depIdxs,
-		MessageInfos:      file_logistic_proto_msgTypes,
+		GoTypes:           file_communicate_logistic_proto_goTypes,
+		DependencyIndexes: file_communicate_logistic_proto_depIdxs,
+		MessageInfos:      file_communicate_logistic_proto_msgTypes,
 	}.Build()
-	File_logistic_proto = out.File
-	file_logistic_proto_rawDesc = nil
-	file_logistic_proto_goTypes = nil
-	file_logistic_proto_depIdxs = nil
+	File_communicate_logistic_proto = out.File
+	file_communicate_logistic_proto_rawDesc = nil
+	file_communicate_logistic_proto_goTypes = nil
+	file_communicate_logistic_proto_depIdxs = nil
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -952,8 +487,6 @@ const _ = grpc.SupportPackageIsVersion6
 type LogisticCommunicateClient interface {
 	CalculateLogistic(ctx context.Context, in *CalulateRequest, opts ...grpc.CallOption) (*CalculateResponse, error)
 	ValidateCarringById(ctx context.Context, in *ValidateCarryingRequest, opts ...grpc.CallOption) (*ValidateCarryingResponse, error)
-	ValidateClientById(ctx context.Context, in *ValidateClientRequest, opts ...grpc.CallOption) (*ValidateClientResponse, error)
-	ClientListAll(ctx context.Context, in *ClientListAllRequest, opts ...grpc.CallOption) (*ClientListAllResponse, error)
 }
 
 type logisticCommunicateClient struct {
@@ -982,30 +515,10 @@ func (c *logisticCommunicateClient) ValidateCarringById(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *logisticCommunicateClient) ValidateClientById(ctx context.Context, in *ValidateClientRequest, opts ...grpc.CallOption) (*ValidateClientResponse, error) {
-	out := new(ValidateClientResponse)
-	err := c.cc.Invoke(ctx, "/LogisticCommunicate/ValidateClientById", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *logisticCommunicateClient) ClientListAll(ctx context.Context, in *ClientListAllRequest, opts ...grpc.CallOption) (*ClientListAllResponse, error) {
-	out := new(ClientListAllResponse)
-	err := c.cc.Invoke(ctx, "/LogisticCommunicate/ClientListAll", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // LogisticCommunicateServer is the server API for LogisticCommunicate service.
 type LogisticCommunicateServer interface {
 	CalculateLogistic(context.Context, *CalulateRequest) (*CalculateResponse, error)
 	ValidateCarringById(context.Context, *ValidateCarryingRequest) (*ValidateCarryingResponse, error)
-	ValidateClientById(context.Context, *ValidateClientRequest) (*ValidateClientResponse, error)
-	ClientListAll(context.Context, *ClientListAllRequest) (*ClientListAllResponse, error)
 }
 
 // UnimplementedLogisticCommunicateServer can be embedded to have forward compatible implementations.
@@ -1017,12 +530,6 @@ func (*UnimplementedLogisticCommunicateServer) CalculateLogistic(context.Context
 }
 func (*UnimplementedLogisticCommunicateServer) ValidateCarringById(context.Context, *ValidateCarryingRequest) (*ValidateCarryingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateCarringById not implemented")
-}
-func (*UnimplementedLogisticCommunicateServer) ValidateClientById(context.Context, *ValidateClientRequest) (*ValidateClientResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateClientById not implemented")
-}
-func (*UnimplementedLogisticCommunicateServer) ClientListAll(context.Context, *ClientListAllRequest) (*ClientListAllResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClientListAll not implemented")
 }
 
 func RegisterLogisticCommunicateServer(s *grpc.Server, srv LogisticCommunicateServer) {
@@ -1065,42 +572,6 @@ func _LogisticCommunicate_ValidateCarringById_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LogisticCommunicate_ValidateClientById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateClientRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LogisticCommunicateServer).ValidateClientById(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/LogisticCommunicate/ValidateClientById",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogisticCommunicateServer).ValidateClientById(ctx, req.(*ValidateClientRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LogisticCommunicate_ClientListAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ClientListAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LogisticCommunicateServer).ClientListAll(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/LogisticCommunicate/ClientListAll",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogisticCommunicateServer).ClientListAll(ctx, req.(*ClientListAllRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _LogisticCommunicate_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "LogisticCommunicate",
 	HandlerType: (*LogisticCommunicateServer)(nil),
@@ -1113,15 +584,7 @@ var _LogisticCommunicate_serviceDesc = grpc.ServiceDesc{
 			MethodName: "ValidateCarringById",
 			Handler:    _LogisticCommunicate_ValidateCarringById_Handler,
 		},
-		{
-			MethodName: "ValidateClientById",
-			Handler:    _LogisticCommunicate_ValidateClientById_Handler,
-		},
-		{
-			MethodName: "ClientListAll",
-			Handler:    _LogisticCommunicate_ClientListAll_Handler,
-		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "logistic.proto",
+	Metadata: "communicate/logistic.proto",
 }

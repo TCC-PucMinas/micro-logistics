@@ -1,7 +1,6 @@
 package model
 
 type Courier struct {
-	Id       int64   `json:"id"`
-	Driver   Driver  `json:"driver"`
-	Products Product `json:"product"`
+	Id     int64  `json:"id"`
+	Driver Driver `json:"driver"`
 }

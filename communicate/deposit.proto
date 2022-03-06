@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+option go_package = "/communicate";
+
+message ValidateDepositByIdRequest {
+  int64 idClient = 1;
+}
+
+message ValidateDepositByIdResponse {
+  bool valid = 1;
+}
+
+message Deposit {
+  int64 id = 1;
+  string name = 2;
+  string street = 3;
+  string district = 4;
+  string city = 5;
+  string country = 6;
+  string state = 7;
+  string number = 8;
+  string lat = 9;
+  string lng = 10;
+  int64 idCarry = 11;
+}
+
+message DataDeposit {
+  repeated Deposit deposit = 1;
+}
+
+message DepositListAllRequest {
+  int64 page = 1;
+  int64 limit = 2;
+  string name = 3;
+}
+
+message DepositListAllResponse {
+  DataDeposit data = 1;
+  int64 page = 2;
+  int64 limit = 3;
+  int64 total = 4;
+}
+
+message CreateDepositRequest {
+  string name = 1;
+  string street = 2;
+  string district = 3;
+  string city = 4;
+  string country = 5;
+  string state = 6;
+  string number = 7;
+  string lat = 8;
+  string lng = 9;
+  int64 idCarry = 10;
+}
+
+message CreateDepositResponse {
+  bool created = 1;
+}
+
+message ValidateDepositCreateRequest {
+  string name = 1;
+  int64 idCarry = 2;
+}
+
+message ValidateDepositCreateResponse {
+  bool valid = 1;
+}
+
+message DeleteDepositByIdRequest {
+  int64 id = 1;
+}
+
+message DeleteDepositByIdResponse {
+  bool deleted = 1;
+}
+
+message UpdateDepositByIdRequest{
+  int64 id = 1;
+  string name = 2;
+  string street = 3;
+  string district = 4;
+  string city = 5;
+  string country = 6;
+  string state = 7;
+  string number = 8;
+  int64 idCarry = 9;
+}
+
+message UpdateDepositByIdResponse {
+  bool updated = 1;
+}
+
+message ListOneDepositByIdRequest {
+  int64 id = 1;
+}
+
+message ListOneDepositByIdResponse {
+  Deposit deposit = 1;
+}
+
+service DepositCommunicate {
+  rpc ValidateDepositById (ValidateDepositByIdRequest) returns (ValidateDepositByIdResponse) {};
+  rpc DepositListAll (DepositListAllRequest) returns (DepositListAllResponse) {};
+  rpc CreateDeposit (CreateDepositRequest) returns (CreateDepositResponse) {};
+  rpc ListOneDepositById (ListOneDepositByIdRequest) returns (ListOneDepositByIdResponse) {};
+  rpc UpdateDepositById (UpdateDepositByIdRequest) returns (UpdateDepositByIdResponse) {};
+  rpc DeleteDepositById (DeleteDepositByIdRequest) returns (DeleteDepositByIdResponse) {};
+  rpc ValidateDepositExist (ValidateDepositCreateRequest) returns (ValidateDepositCreateResponse) {};
+}

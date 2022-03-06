@@ -4,7 +4,7 @@
 ## Generate
 ```sh
 $ protoc -I communicate/ communicate/logistic.proto --go_out=plugins=grpc:communicate
-$ protoc -I communicate/ communicate/users.proto --go_out=plugins=grpc:communicate
+$ protoc communicate/client.proto --go_out=plugins=grpc:.
 ```
 
 

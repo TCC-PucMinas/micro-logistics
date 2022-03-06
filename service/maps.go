@@ -8,7 +8,9 @@ import (
 	"googlemaps.github.io/maps"
 )
 
-var keyGoogle = "AIzaSyCeajRVwvBKwxyQRRyMHOx4zVWzk1ETFuU"
+var keyGoogle = "AIzaSyD5Qni6QsI9nC4GGtwr1kpBss24Zo9KIN8"
+
+// var keyGoogle = "AIzaSyAWl46SC_v1R3MrePMvJqUhhwrX28KWMxU"
 
 type LatAndLng struct {
 	Lat string
@@ -49,5 +51,31 @@ func (calc *Calculate) CalculateRoute() error {
 			calc.Duration = a.Duration
 		}
 	}
+	return nil
+}
+
+func (l *LatAndLng) GetLatAndLngByAddress(address string) error {
+
+	c, err := maps.NewClient(maps.WithAPIKey(keyGoogle))
+
+	if err != nil {
+		return err
+	}
+
+	r := &maps.GeocodingRequest{
+		Address: address,
+	}
+
+	rout, err := c.Geocode(context.Background(), r)
+
+	if err != nil {
+		return err
+	}
+
+	for _, v := range rout {
+		l.Lat = fmt.Sprintf("%f", v.Geometry.Location.Lat)
+		l.Lng = fmt.Sprintf("%f", v.Geometry.Location.Lng)
+	}
+
 	return nil
 }

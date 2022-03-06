@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+option go_package = "/communicate";
+
+message ValidateCarryByIdRequest {
+  int64 idClient = 1;
+}
+
+message ValidateCarryByIdResponse {
+  bool valid = 1;
+}
+
+message Carry {
+  int64 id = 1;
+  string name = 2;
+  string street = 3;
+  string district = 4;
+  string city = 5;
+  string country = 6;
+  string state = 7;
+  string number = 8;
+  string lat = 9;
+  string lng = 10;
+}
+
+message DataCarry {
+  repeated Carry carry = 1;
+}
+
+message CarryListAllRequest {
+  int64 page = 1;
+  int64 limit = 2;
+  string name = 3;
+}
+
+message CarryListAllResponse {
+  DataCarry data = 1;
+  int64 page = 2;
+  int64 limit = 3;
+  int64 total = 4;
+}
+
+message CreateCarryRequest {
+  string name = 1;
+  string street = 2;
+  string district = 3;
+  string city = 4;
+  string country = 5;
+  string state = 6;
+  string number = 7;
+  string lat = 8;
+  string lng = 9;
+}
+
+message CreateCarryResponse {
+  bool created = 1;
+}
+
+message ValidateCarryCreateRequest {
+  string name = 1;
+}
+
+message ValidateCarryCreateResponse {
+  bool valid = 1;
+}
+
+message DeleteCarryByIdRequest {
+  int64 id = 1;
+}
+
+message DeleteCarryByIdResponse {
+  bool deleted = 1;
+}
+
+message UpdateCarryByIdRequest{
+  int64 id = 1;
+  string name = 2;
+  string street = 3;
+  string district = 4;
+  string city = 5;
+  string country = 6;
+  string state = 7;
+  string number =8;
+}
+
+message UpdateCarryByIdResponse {
+  bool updated = 1;
+}
+
+message ListOneCarryByIdRequest {
+  int64 id = 1;
+}
+
+message ListOneCarryByIdResponse {
+  Carry carry = 1;
+}
+
+service CarryCommunicate {
+  rpc ValidateCarryById (ValidateCarryByIdRequest) returns (ValidateCarryByIdResponse) {};
+  rpc CarryListAll (CarryListAllRequest) returns (CarryListAllResponse) {};
+  rpc CreateCarry (CreateCarryRequest) returns (CreateCarryResponse) {};
+  rpc ListOneCarryById (ListOneCarryByIdRequest) returns (ListOneCarryByIdResponse) {};
+  rpc UpdateCarryById (UpdateCarryByIdRequest) returns (UpdateCarryByIdResponse) {};
+  rpc DeleteCarryById (DeleteCarryByIdRequest) returns (DeleteCarryByIdResponse) {};
+  rpc ValidateCarryExist (ValidateCarryCreateRequest) returns (ValidateCarryCreateResponse) {};
+}
