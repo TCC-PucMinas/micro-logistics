@@ -21,7 +21,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	// communicate.RegisterLogisticCommunicateServer(grpcServer, &controller.LogisticServer{})
+	communicate.RegisterLogisticCommunicateServer(grpcServer, &controller.LogisticServer{})
 	communicate.RegisterCarryCommunicateServer(grpcServer, &controller.CarryServer{})
 	communicate.RegisterDepositCommunicateServer(grpcServer, &controller.DepositServer{})
 
