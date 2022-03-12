@@ -15,7 +15,6 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
-	"time"
 )
 
 const (
@@ -237,26 +236,6 @@ type DirectionLocationRequest struct {
 
 	Origin  *LatAndLng `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 	Destiny *LatAndLng `protobuf:"bytes,2,opt,name=destiny,proto3" json:"destiny,omitempty"`
-}
-
-func (x *DirectionLocationRequest) Deadline() (deadline time.Time, ok bool) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (x *DirectionLocationRequest) Done() <-chan struct{} {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (x *DirectionLocationRequest) Err() error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (x *DirectionLocationRequest) Value(key interface{}) interface{} {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (x *DirectionLocationRequest) Reset() {

@@ -13,12 +13,15 @@ type LogisticServer struct {
 
 func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communicate.CalulateRequest) (*communicate.CalculateResponse, error) {
 
-	var conn *grpc.ClientConn
+	res := &communicate.CalculateResponse{}
+
+	conn, err := grpc.Dial(":6000", grpc.WithInsecure())
+
+	if err != nil {
+		return res, err
+	}
 
 	defer conn.Close()
-
-	res := &communicate.CalculateResponse{}
-	//googleServie := service.Calculate{}
 	carry := model.Carrying{}
 
 	if err := carry.GetById(request.IdCarring); err != nil {
@@ -28,22 +31,24 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	serviceClient := communicate.NewClientCommunicateClient(conn)
 
 	validateClientById := &communicate.ValidateClientByIdRequest{
-		Id: request.IdClient,
+		IdClient: request.IdClient,
 	}
 
 	if _, err := serviceClient.ValidateClientById(ctx, validateClientById); err != nil {
 		return res, errors.New("Id Client invalid!")
 	}
 
+	serviceDestination := communicate.NewDestinationCommunicateClient(conn)
+
+	requestDestinationById := &communicate.ListOneDestinationByIdRequest{
+		Id: request.IdDestination,
+	}
+
+	destination, err := serviceDestination.ListOneDestinationById(ctx, requestDestinationById)
+
 	if err != nil {
 		return res, err
 	}
-
-	// comunicação com o micro serviço do client
-	//
-	//if err := destination(request.IdClient); err != nil {
-	//	return res, errors.New("Id client invalid!")
-	//}
 
 	origin := &communicate.LatAndLng{
 		Lat: carry.Lat,
@@ -51,8 +56,8 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	}
 
 	destiny := &communicate.LatAndLng{
-		Lat: destination.Lat,
-		Lng: destination.Lng,
+		Lat: destination.Destination.Lat,
+		Lng: destination.Destination.Lng,
 	}
 
 	requestCommunicateClientGelocation := &communicate.DirectionLocationRequest{
@@ -60,7 +65,15 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 		Destiny: destiny,
 	}
 
-	serviceGeolocation := communicate.NewGelocationCommunicateClient(conn)
+	connGeolocation, err := grpc.Dial(":7000", grpc.WithInsecure())
+
+	if err != nil {
+		return res, err
+	}
+
+	defer connGeolocation.Close()
+
+	serviceGeolocation := communicate.NewGelocationCommunicateClient(connGeolocation)
 
 	responseRequest, err := serviceGeolocation.DirectionLocation(ctx, requestCommunicateClientGelocation)
 
@@ -69,12 +82,12 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	}
 
 	res.Origin = &communicate.LatAndLong{
-		Lat: responseRequest.Origin.Lat,
-		Lng: responseRequest.Origin.Lng,
+		Lat: carry.Lat,
+		Lng: carry.Lng,
 	}
 	res.Destiny = &communicate.LatAndLong{
-		Lat: responseRequest.Destiny.Lat,
-		Lng: responseRequest.Destiny.Lng,
+		Lat: destination.Destination.Lat,
+		Lng: destination.Destination.Lng,
 	}
 
 	res.HumanReadable = responseRequest.HumanReadable

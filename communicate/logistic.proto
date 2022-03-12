@@ -5,6 +5,7 @@ option go_package = "/communicate";
 message CalulateRequest {
   int64 idCarring = 1;
   int64 idClient = 2;
+  int64 idDestination = 3;
 }
 
 message LatAndLong {

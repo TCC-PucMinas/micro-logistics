@@ -13,8 +13,8 @@ message GelocationRequest {
 }
 
 message GelocationResponse {
-    string lat = 1;
-    string lng = 2;
+  string lat = 1;
+  string lng = 2;
 }
 
 message LatAndLng {
