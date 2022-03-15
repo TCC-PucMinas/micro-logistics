@@ -7,3 +7,4 @@ type Driver struct {
 	Carrying Carrying `json:"Carrying"`
 	Truck    Truck    `json:"truck"`
 }
+
