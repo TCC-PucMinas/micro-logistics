@@ -3,79 +3,46 @@ package controller
 import (
 	"context"
 	"errors"
-	"google.golang.org/grpc"
+	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
+	"micro-logistic/service"
 )
 
-type LogisticServer struct {
-}
+type LogisticServer struct{}
 
 func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communicate.CalulateRequest) (*communicate.CalculateResponse, error) {
 
 	res := &communicate.CalculateResponse{}
 
-	conn, err := grpc.Dial(":6000", grpc.WithInsecure())
-
-	if err != nil {
-		return res, err
-	}
-
-	defer conn.Close()
 	carry := model.Carrying{}
 
 	if err := carry.GetById(request.IdCarring); err != nil {
 		return res, errors.New("Id invalid!")
 	}
 
-	serviceClient := communicate.NewClientCommunicateClient(conn)
-
-	validateClientById := &communicate.ValidateClientByIdRequest{
-		IdClient: request.IdClient,
-	}
-
-	if _, err := serviceClient.ValidateClientById(ctx, validateClientById); err != nil {
+	if err := service.ValidateClientById(request.IdClient); err != nil {
+		log.Println("err", err)
 		return res, errors.New("Id Client invalid!")
 	}
 
-	serviceDestination := communicate.NewDestinationCommunicateClient(conn)
-
-	requestDestinationById := &communicate.ListOneDestinationByIdRequest{
-		Id: request.IdDestination,
-	}
-
-	destination, err := serviceDestination.ListOneDestinationById(ctx, requestDestinationById)
+	destination, err := service.ListOneDestinationById(request.IdDestination)
 
 	if err != nil {
 		return res, err
 	}
 
-	origin := &communicate.LatAndLng{
+	origin := service.Origin{
 		Lat: carry.Lat,
 		Lng: carry.Lng,
 	}
 
-	destiny := &communicate.LatAndLng{
+	destiny := service.Destiny{
 		Lat: destination.Destination.Lat,
 		Lng: destination.Destination.Lng,
 	}
 
-	requestCommunicateClientGelocation := &communicate.DirectionLocationRequest{
-		Origin:  origin,
-		Destiny: destiny,
-	}
-
-	connGeolocation, err := grpc.Dial(":7000", grpc.WithInsecure())
-
-	if err != nil {
-		return res, err
-	}
-
-	defer connGeolocation.Close()
-
-	serviceGeolocation := communicate.NewGelocationCommunicateClient(connGeolocation)
-
-	responseRequest, err := serviceGeolocation.DirectionLocation(ctx, requestCommunicateClientGelocation)
+	humanReadable, meters, err := service.CalculateRouter(origin, destiny)
 
 	if err != nil {
 		return res, err
@@ -90,8 +57,8 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 		Lng: destination.Destination.Lng,
 	}
 
-	res.HumanReadable = responseRequest.HumanReadable
-	res.Meters = responseRequest.Meters
+	res.HumanReadable = humanReadable
+	res.Meters = meters
 
 	return res, nil
 

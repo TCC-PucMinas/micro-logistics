@@ -22,6 +22,7 @@ type Deposit struct {
 	Name     string   `json:"name"`
 	Street   string   `json:"street"`
 	District string   `json:"district"`
+	ZipCode  string   `json:"zipCode"`
 	City     string   `json:"city"`
 	Country  string   `json:"country"`
 	State    string   `json:"state"`
@@ -32,7 +33,11 @@ type Deposit struct {
 }
 
 func setRedisCacheDepositgGetById(deposit *Deposit) error {
-	db := db.ConnectDatabaseRedis()
+	db, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	json, err := json.Marshal(deposit)
 
@@ -47,7 +52,11 @@ func setRedisCacheDepositgGetById(deposit *Deposit) error {
 func getDepositRedisCacheGetOneById(id int64) (Deposit, error) {
 	deposit := Deposit{}
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return deposit, err
+	}
 
 	key := fmt.Sprintf("%v - %v", keyDepositRedisGetById, id)
 
@@ -67,7 +76,11 @@ func getDepositRedisCacheGetOneById(id int64) (Deposit, error) {
 func getDepositRedisCacheGetOneByNameAndCarry(name string, idCarry int64) (Deposit, error) {
 	deposit := Deposit{}
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return deposit, err
+	}
 
 	key := fmt.Sprintf("%v - %v - %v", keyDepositRedisGetByName, name, idCarry)
 
@@ -85,7 +98,11 @@ func getDepositRedisCacheGetOneByNameAndCarry(name string, idCarry int64) (Depos
 }
 
 func setRedisCacheDepositGetByNameAndEmail(deposit *Deposit) error {
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	marshal, err := json.Marshal(deposit)
 
@@ -100,7 +117,11 @@ func setRedisCacheDepositGetByNameAndEmail(deposit *Deposit) error {
 func getDepositRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([]Deposit, error) {
 	var deposit []Deposit
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return deposit, err
+	}
 
 	key := fmt.Sprintf("%v - %v -%v -%v", keyDepositRedisGetPaginateByName, name, page, limit)
 
@@ -118,7 +139,11 @@ func getDepositRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([
 }
 
 func setRedisCacheDepositGetByPaginateByName(name string, page, limit int64, deposit []Deposit) error {
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	marshal, err := json.Marshal(deposit)
 

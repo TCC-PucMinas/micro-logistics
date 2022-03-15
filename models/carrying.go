@@ -22,6 +22,7 @@ type Carrying struct {
 	Name     string `json:"name"`
 	Street   string `json:"street"`
 	District string `json:"district"`
+	ZipCode  string `json:"zipCode"`
 	City     string `json:"city"`
 	Country  string `json:"country"`
 	State    string `json:"state"`
@@ -31,7 +32,11 @@ type Carrying struct {
 }
 
 func setRedisCacheCarryingGetById(carry *Carrying) error {
-	db := db.ConnectDatabaseRedis()
+	db, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	json, err := json.Marshal(carry)
 
@@ -46,7 +51,11 @@ func setRedisCacheCarryingGetById(carry *Carrying) error {
 func getCarryingRedisCacheGetOneById(id int64) (Carrying, error) {
 	carrying := Carrying{}
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return carrying, err
+	}
 
 	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetById, id)
 
@@ -66,7 +75,11 @@ func getCarryingRedisCacheGetOneById(id int64) (Carrying, error) {
 func getCarryRedisCacheGetOneByName(name string) (Carrying, error) {
 	carry := Carrying{}
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return carry, err
+	}
 
 	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetByName, name)
 
@@ -84,7 +97,11 @@ func getCarryRedisCacheGetOneByName(name string) (Carrying, error) {
 }
 
 func setRedisCacheCarryGetByNameAndEmail(carry *Carrying) error {
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	marshal, err := json.Marshal(carry)
 
@@ -99,7 +116,11 @@ func setRedisCacheCarryGetByNameAndEmail(carry *Carrying) error {
 func getCarryRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([]Carrying, error) {
 	var carry []Carrying
 
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return carry, err
+	}
 
 	key := fmt.Sprintf("%v - %v -%v -%v", keyCarryingRedisGetPaginateByName, name, page, limit)
 
@@ -117,7 +138,11 @@ func getCarryRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([]C
 }
 
 func setRedisCacheCarryGetByPaginateByName(name string, page, limit int64, carry []Carrying) error {
-	redis := db.ConnectDatabaseRedis()
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
 
 	marshal, err := json.Marshal(carry)
 
@@ -139,7 +164,7 @@ func (carrying *Carrying) GetById(id int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, name, street, district, city, country, state, number, lat, lng  from carryings where id = ? limit 1;`
+	query := `select id, name, street, district, city, country, state, number, lat, lng, zipCode  from carryings where id = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, id)
 
@@ -148,14 +173,15 @@ func (carrying *Carrying) GetById(id int64) error {
 	}
 
 	for requestConfig.Next() {
-		var id, name, street, district, city, country, state, number, lat, lng string
-		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng)
+		var id, name, street, district, city, country, state, number, lat, lng, zipCode string
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &zipCode)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		carrying.Id = i64
 		carrying.Name = name
 		carrying.Street = street
 		carrying.District = district
 		carrying.City = city
+		carrying.ZipCode = zipCode
 		carrying.Country = country
 		carrying.State = state
 		carrying.Number = number
@@ -177,7 +203,7 @@ func (carrying *Carrying) GetByName(name string) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, name, street, district, city, country, state, number, lat, lng  from carryings where name = ? limit 1;`
+	query := `select id, name, street, district, city, country, state, number, zipCode, lat, lng  from carryings where name = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, name)
 
@@ -186,14 +212,15 @@ func (carrying *Carrying) GetByName(name string) error {
 	}
 
 	for requestConfig.Next() {
-		var id, name, street, district, city, country, state, number, lat, lng string
-		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng)
+		var id, name, street, district, city, country, state, number, lat, lng, zipCode string
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		carrying.Id = i64
 		carrying.Name = name
 		carrying.Street = street
 		carrying.District = district
 		carrying.City = city
+		carrying.ZipCode = zipCode
 		carrying.Country = country
 		carrying.State = state
 		carrying.Number = number
@@ -229,7 +256,7 @@ func (carrying *Carrying) DeleteById() error {
 func (carrying *Carrying) UpdateCarryById() error {
 	sql := db.ConnectDatabase()
 
-	query := "update carryings set name = ?, street = ?, district = ?, city = ?, country = ?, `state` = ?, `number` = ?, lat = ?, lng = ? where id = ?"
+	query := "update carryings set name = ?, street = ?, district = ?, city = ?, country = ?, `state` = ?, `number` = ?, zipCode = ?, lat = ?, lng = ? where id = ?"
 
 	destinationUpdate, err := sql.Prepare(query)
 
@@ -237,7 +264,7 @@ func (carrying *Carrying) UpdateCarryById() error {
 		return err
 	}
 
-	_, e := destinationUpdate.Exec(carrying.Name, carrying.Street, carrying.District, carrying.City, carrying.Country, carrying.State, carrying.Number, carrying.Lat, carrying.Lng, carrying.Id)
+	_, e := destinationUpdate.Exec(carrying.Name, carrying.Street, carrying.District, carrying.City, carrying.Country, carrying.State, carrying.Number, carrying.ZipCode, carrying.Lat, carrying.Lng, carrying.Id)
 
 	if e != nil {
 		return e
@@ -249,7 +276,7 @@ func (carrying *Carrying) UpdateCarryById() error {
 func (carrying *Carrying) CreateCarry() error {
 	sql := db.ConnectDatabase()
 
-	query := "insert into carryings (name, street, district, city, country, `state`, `number`, lat, lng) values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	query := "insert into carryings (name, street, district, city, country, `state`, `number`, zipCode, lat, lng) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	createDestination, err := sql.Prepare(query)
 
@@ -257,7 +284,7 @@ func (carrying *Carrying) CreateCarry() error {
 		return err
 	}
 
-	_, e := createDestination.Exec(carrying.Name, carrying.Street, carrying.District, carrying.City, carrying.Country, carrying.State, carrying.Number, carrying.Lat, carrying.Lng)
+	_, e := createDestination.Exec(carrying.Name, carrying.Street, carrying.District, carrying.City, carrying.Country, carrying.State, carrying.Number, carrying.ZipCode, carrying.Lat, carrying.Lng)
 
 	if e != nil {
 		return e
@@ -287,7 +314,7 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 	paginate.PaginateMounted()
 	paginate.MountedQuery("carryings")
 
-	query := fmt.Sprintf("select id, name, street, district, city, country, state, number, lat, lng , %v from carryings where name like ? LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf("select id, name, street, district, city, country, state, number, zipCode, lat, lng , %v from carryings where name like ? LIMIT ? OFFSET ?;", paginate.Query)
 
 	requestConfig, err := sql.Query(query, name, paginate.Limit, paginate.Page)
 
@@ -297,9 +324,9 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 
 	for requestConfig.Next() {
 		carryGet := Carrying{}
-		var name, street, district, city, country, state, number, lat, lng string
+		var name, street, zipCode, district, city, country, state, number, lat, lng string
 		var id int64
-		err := requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &total)
+		err := requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &total)
 		log.Println("err", err)
 
 		if id != 0 {
@@ -309,6 +336,7 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 			carryGet.District = district
 			carryGet.City = city
 			carryGet.Country = country
+			carryGet.ZipCode = zipCode
 			carryGet.State = state
 			carryGet.Number = number
 			carryGet.Lat = lat

@@ -21,7 +21,8 @@ message Deposit {
   string number = 8;
   string lat = 9;
   string lng = 10;
-  int64 idCarry = 11;
+  string zipCode = 11;
+  int64 idCarry = 12;
 }
 
 message DataDeposit {
@@ -51,7 +52,8 @@ message CreateDepositRequest {
   string number = 7;
   string lat = 8;
   string lng = 9;
-  int64 idCarry = 10;
+  string zipCode = 10;
+  int64 idCarry = 11;
 }
 
 message CreateDepositResponse {
@@ -84,7 +86,8 @@ message UpdateDepositByIdRequest{
   string country = 6;
   string state = 7;
   string number = 8;
-  int64 idCarry = 9;
+  string zipCode = 9;
+  int64 idCarry = 10;
 }
 
 message UpdateDepositByIdResponse {

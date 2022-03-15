@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
@@ -33,6 +32,7 @@ func (s *CarryServer) CarryListAll(ctx context.Context, request *communicate.Car
 		carry.State = c.State
 		carry.Street = c.Street
 		carry.District = c.District
+		carry.ZipCode = c.ZipCode
 		carry.Number = c.Number
 		carry.Lat = c.Lat
 		carry.Lng = c.Lng
@@ -64,6 +64,7 @@ func (s *CarryServer) ListOneCarryById(ctx context.Context, request *communicate
 	carryResponse.State = carry.State
 	carryResponse.Street = carry.Street
 	carryResponse.District = carry.District
+	carryResponse.ZipCode = carry.ZipCode
 	carryResponse.Number = carry.Number
 	carryResponse.Lat = carry.Lat
 	carryResponse.Lng = carry.Lng
@@ -81,6 +82,7 @@ func (s *CarryServer) CreateCarry(ctx context.Context, request *communicate.Crea
 		Country:  request.Country,
 		State:    request.State,
 		Street:   request.Street,
+		ZipCode:  request.ZipCode,
 		District: request.District,
 		Number:   request.Number,
 	}
@@ -89,14 +91,14 @@ func (s *CarryServer) CreateCarry(ctx context.Context, request *communicate.Crea
 		return res, errors.New("carry not duplicated!")
 	}
 
-	latAndLng := service.LatAndLng{}
-	address := fmt.Sprintf("%v, %v, %v, %v, %v, %v", carry.Street, carry.Number, carry.District, carry.City, carry.State, carry.Country)
-	if err := latAndLng.GetLatAndLngByAddress(address); err != nil {
+	lat, lng, err := service.GetLocationCarrying(carry)
+
+	if err != nil {
 		return res, err
 	}
 
-	carry.Lat = latAndLng.Lat
-	carry.Lng = latAndLng.Lng
+	carry.Lat = lat
+	carry.Lng = lng
 
 	if err := carry.CreateCarry(); err != nil {
 		log.Println("err", err)
@@ -118,18 +120,19 @@ func (s *CarryServer) UpdateCarryById(ctx context.Context, request *communicate.
 		Country:  request.Country,
 		State:    request.State,
 		Street:   request.Street,
+		ZipCode:  request.ZipCode,
 		District: request.District,
 		Number:   request.Number,
 	}
 
-	latAndLng := service.LatAndLng{}
-	address := fmt.Sprintf("%v, %v, %v, %v, %v, %v", carry.Street, carry.Number, carry.District, carry.City, carry.State, carry.Country)
-	if err := latAndLng.GetLatAndLngByAddress(address); err != nil {
+	lat, lng, err := service.GetLocationCarrying(carry)
+
+	if err != nil {
 		return res, err
 	}
 
-	carry.Lat = latAndLng.Lat
-	carry.Lng = latAndLng.Lng
+	carry.Lat = lat
+	carry.Lng = lng
 
 	if err := carry.GetById(request.Id); err != nil || carry.Id == 0 {
 		return res, errors.New("Carry not found!")

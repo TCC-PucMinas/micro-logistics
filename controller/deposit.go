@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"fmt"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 	"micro-logistic/service"
@@ -83,6 +82,7 @@ func (s *DepositServer) CreateDeposit(ctx context.Context, request *communicate.
 		Country:  request.Country,
 		State:    request.State,
 		Street:   request.Street,
+		ZipCode:  request.ZipCode,
 		District: request.District,
 		Number:   request.Number,
 		Carrying: model.Carrying{Id: request.IdCarry},
@@ -92,16 +92,14 @@ func (s *DepositServer) CreateDeposit(ctx context.Context, request *communicate.
 		return res, errors.New("deposit not duplicated!")
 	}
 
-	latAndLng := service.LatAndLng{}
+	lat, lng, err := service.GetLocationDeposit(deposit)
 
-	address := fmt.Sprintf("%v, %v, %v, %v, %v, %v", deposit.Street, deposit.Number, deposit.District, deposit.City, deposit.State, deposit.Country)
-
-	if err := latAndLng.GetLatAndLngByAddress(address); err != nil {
+	if err != nil {
 		return res, err
 	}
 
-	deposit.Lat = latAndLng.Lat
-	deposit.Lng = latAndLng.Lng
+	deposit.Lat = lat
+	deposit.Lng = lng
 
 	if err := deposit.CreateDeposit(); err != nil {
 		return res, errors.New("Error creating deposit!")
@@ -127,22 +125,21 @@ func (s *DepositServer) UpdateDepositById(ctx context.Context, request *communic
 		City:     request.City,
 		Country:  request.Country,
 		State:    request.State,
+		ZipCode:  request.ZipCode,
 		Street:   request.Street,
 		District: request.District,
 		Number:   request.Number,
 		Carrying: model.Carrying{Id: request.IdCarry},
 	}
 
-	latAndLng := service.LatAndLng{}
+	lat, lng, err := service.GetLocationDeposit(deposit)
 
-	address := fmt.Sprintf("%v, %v, %v, %v, %v, %v", deposit.Street, deposit.Number, deposit.District, deposit.City, deposit.State, deposit.Country)
-
-	if err := latAndLng.GetLatAndLngByAddress(address); err != nil {
+	if err != nil {
 		return res, err
 	}
 
-	deposit.Lat = latAndLng.Lat
-	deposit.Lng = latAndLng.Lng
+	deposit.Lat = lat
+	deposit.Lng = lng
 
 	if err := deposit.UpdateDepositById(); err != nil {
 		return res, errors.New("Erro updating deposit!")

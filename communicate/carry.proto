@@ -19,8 +19,9 @@ message Carry {
   string country = 6;
   string state = 7;
   string number = 8;
-  string lat = 9;
-  string lng = 10;
+  string zipCode = 9;
+  string lat = 10;
+  string lng = 11;
 }
 
 message DataCarry {
@@ -48,8 +49,9 @@ message CreateCarryRequest {
   string country = 5;
   string state = 6;
   string number = 7;
-  string lat = 8;
-  string lng = 9;
+  string zipCode = 8;
+  string lat = 9;
+  string lng = 10;
 }
 
 message CreateCarryResponse {
@@ -79,8 +81,9 @@ message UpdateCarryByIdRequest{
   string district = 4;
   string city = 5;
   string country = 6;
-  string state = 7;
-  string number =8;
+  string zipCode = 7;
+  string state = 8;
+  string number = 9;
 }
 
 message UpdateCarryByIdResponse {
