@@ -63,7 +63,7 @@ func getTruckRedisCacheGetOneById(id int64) (Truck, error) {
 	return truck, nil
 }
 
-func getCarryRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64) ([]Truck, error) {
+func getTruckRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64) ([]Truck, error) {
 	var truck []Truck
 
 	redis, err := db.ConnectDatabaseRedis()
@@ -87,7 +87,7 @@ func getCarryRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64)
 	return truck, nil
 }
 
-func setCarryRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64, truck []Truck) error {
+func setTruckRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64, truck []Truck) error {
 	redis, err := db.ConnectDatabaseRedis()
 
 	if err != nil {
