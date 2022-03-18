@@ -3,7 +3,6 @@ package model
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"micro-logistic/helpers"
 	"strconv"
 	"time"
@@ -158,7 +157,17 @@ func setRedisCacheCarryGetByPaginateByName(name string, page, limit int64, carry
 func (carrying *Carrying) GetById(id int64) error {
 
 	if c, err := getCarryingRedisCacheGetOneById(id); err == nil {
-		carrying = &c
+		carrying.City = c.City
+		carrying.Country = c.Country
+		carrying.District = c.District
+		carrying.Id = c.Id
+		carrying.Lat = c.Lat
+		carrying.Lng = c.Lng
+		carrying.Name = c.Name
+		carrying.Number = c.Number
+		carrying.State = c.State
+		carrying.Street = c.Street
+		carrying.ZipCode = c.ZipCode
 		return nil
 	}
 
@@ -326,8 +335,7 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 		carryGet := Carrying{}
 		var name, street, zipCode, district, city, country, state, number, lat, lng string
 		var id int64
-		err := requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &total)
-		log.Println("err", err)
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &total)
 
 		if id != 0 {
 			carryGet.Id = id

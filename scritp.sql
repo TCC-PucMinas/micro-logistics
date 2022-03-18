@@ -64,6 +64,11 @@ create table drivers (
 );
 
 insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste', 'https://cdn-icons-png.flaticon.com/512/147/147144.png', 1, 1);
+
+
+
+
+
 #
 # create table couriers (
 #     id int unsigned auto_increment primary key,

@@ -2,13 +2,13 @@ package service
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
-	"time"
+
+	"google.golang.org/grpc"
 )
 
-const attemptRetry = 20
+const attemptRetry = 2
 
 type Origin struct {
 	Lat string
@@ -63,9 +63,7 @@ func integrationGeolocation(c *communicate.GelocationRequest, retry int) (*commu
 }
 
 func attempRetryLatency(retry int, location *communicate.DirectionLocationResponse, err error, c *communicate.DirectionLocationRequest) (*communicate.DirectionLocationResponse, error) {
-	retry += 1
 	if retry <= attemptRetry {
-		time.Sleep(1 * time.Second)
 		return integrationDirectionLocation(c, retry)
 	}
 	return location, err
@@ -74,7 +72,6 @@ func attempRetryLatency(retry int, location *communicate.DirectionLocationRespon
 func attempRetryLatencyGeolocation(retry int, location *communicate.GelocationResponse, err error, c *communicate.GelocationRequest) (*communicate.GelocationResponse, error) {
 	retry += 1
 	if retry <= attemptRetry {
-		time.Sleep(1 * time.Second)
 		return integrationGeolocation(c, retry)
 	}
 	return location, err

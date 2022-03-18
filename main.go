@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
 	"micro-logistic/communicate"
 	"micro-logistic/controller"
 	"net"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 	communicate.RegisterLogisticCommunicateServer(grpcServer, &controller.LogisticServer{})
 	communicate.RegisterCarryCommunicateServer(grpcServer, &controller.CarryServer{})
 	communicate.RegisterDepositCommunicateServer(grpcServer, &controller.DepositServer{})
+	communicate.RegisterTruckCommunicateServer(grpcServer, &controller.TruckServer{})
 
 	fmt.Printf("[x] - Server logistic listen http://localhost:%v\n", port)
 

@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"micro-logistic/communicate"
-	"time"
+
+	"google.golang.org/grpc"
 )
 
-const attemptRetryDestination = 20
+const attemptRetryDestination = 2
 
 func integrationDestinationById(c *communicate.ListOneDestinationByIdRequest, retry int) (*communicate.ListOneDestinationByIdResponse, error) {
 	ctx := context.Background()
@@ -33,7 +33,6 @@ func integrationDestinationById(c *communicate.ListOneDestinationByIdRequest, re
 func attempRetryLatencyDestination(retry int, requestDestination *communicate.ListOneDestinationByIdResponse, err error, c *communicate.ListOneDestinationByIdRequest) (*communicate.ListOneDestinationByIdResponse, error) {
 	retry += 1
 	if retry <= attemptRetryDestination {
-		time.Sleep(1 * time.Second)
 		return integrationDestinationById(c, retry)
 	}
 	return requestDestination, err

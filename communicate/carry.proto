@@ -3,7 +3,7 @@ syntax = "proto3";
 option go_package = "/communicate";
 
 message ValidateCarryByIdRequest {
-  int64 idClient = 1;
+  int64 idCarry = 1;
 }
 
 message ValidateCarryByIdResponse {

@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+option go_package = "/communicate";
+
+message Truck {
+    int64 id = 1;
+    string brand = 2;
+    string model = 3;
+    string year = 4;
+    string plate = 5;
+    int64 idCarry = 6;
+}
+
+message DataTruck {
+    repeated Truck truck = 1;
+}
+
+message TruckListAllRequest {
+    int64 page = 1;
+    int64 limit = 2;
+    int64 idCarry = 3;
+}
+
+message TruckListAllResponse {
+    DataTruck data = 1;
+    int64 page = 2;
+    int64 limit = 3;
+    int64 total = 4;
+}
+
+
+message CreateTruckRequest {
+    string brand = 1;
+    string model = 2;
+    string year = 3;
+    string plate = 4;
+    int64 idCarry = 5;
+}
+
+message CreateTruckResponse {
+    bool created = 1;
+}
+
+message DeleteTruckByIdRequest {
+    int64 id = 1;
+}
+
+message DeleteTruckByIdResponse {
+    bool deleted = 1;
+}
+
+message UpdateTruckByIdRequest{
+    int64 id = 1;
+    string brand = 2;
+    string model = 3;
+    string year = 4;
+    string plate = 5;
+    int64 idCarry = 6;
+}
+
+message UpdateTruckByIdResponse {
+    bool updated = 1;
+}
+
+message ListOneTruckByIdRequest {
+    int64 id = 1;
+}
+
+message ListOneTruckByIdResponse {
+    Truck truck = 1;
+}
+
+service TruckCommunicate {
+    rpc TruckListAll (TruckListAllRequest) returns (TruckListAllResponse) {};
+    rpc CreateTruck (CreateTruckRequest) returns (CreateTruckResponse) {};
+    rpc ListOneTruckById (ListOneTruckByIdRequest) returns (ListOneTruckByIdResponse) {};
+    rpc UpdateTruckById (UpdateTruckByIdRequest) returns (UpdateTruckByIdResponse) {};
+    rpc DeleteTruckById (DeleteTruckByIdRequest) returns (DeleteTruckByIdResponse) {};
+}

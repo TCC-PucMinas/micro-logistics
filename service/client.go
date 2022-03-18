@@ -3,12 +3,11 @@ package service
 import (
 	"context"
 	"micro-logistic/communicate"
-	"time"
 
 	"google.golang.org/grpc"
 )
 
-const attemptRetryClient = 20
+const attemptRetryClient = 2
 
 func integrationClientById(c *communicate.ValidateClientByIdRequest, retry int) (*communicate.ValidateClientByIdResponse, error) {
 	ctx := context.Background()
@@ -34,7 +33,6 @@ func integrationClientById(c *communicate.ValidateClientByIdRequest, retry int) 
 func attempRetryLatencyClient(retry int, requestClient *communicate.ValidateClientByIdResponse, err error, c *communicate.ValidateClientByIdRequest) (*communicate.ValidateClientByIdResponse, error) {
 	retry += 1
 	if retry <= attemptRetryClient {
-		time.Sleep(1 * time.Second)
 		return integrationClientById(c, retry)
 	}
 	return requestClient, err

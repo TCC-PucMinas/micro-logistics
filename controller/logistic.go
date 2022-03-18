@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 	"micro-logistic/service"
@@ -22,7 +21,6 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 	}
 
 	if err := service.ValidateClientById(request.IdClient); err != nil {
-		log.Println("err", err)
 		return res, errors.New("Id Client invalid!")
 	}
 
@@ -62,19 +60,4 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 
 	return res, nil
 
-}
-
-func (s *LogisticServer) ValidateCarringById(ctx context.Context, request *communicate.ValidateCarryingRequest) (*communicate.ValidateCarryingResponse, error) {
-
-	res := &communicate.ValidateCarryingResponse{}
-
-	carry := model.Carrying{}
-
-	if err := carry.GetById(request.IdCarring); err != nil {
-		return res, errors.New("Carrying Id invalid!")
-	}
-
-	res.Valid = true
-
-	return res, nil
 }

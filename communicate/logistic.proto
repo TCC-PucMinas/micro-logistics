@@ -21,18 +21,10 @@ message CalculateResponse {
   string HumanReadable = 5;
 }
 
-message ValidateCarryingRequest {
-  int64 idCarring = 1;
-}
-
-message ValidateCarryingResponse {
-  bool valid = 1;
-}
 /*
   - Criar uma listar com filtro dos clientes - (ok)
 */
 
 service LogisticCommunicate {
   rpc CalculateLogistic (CalulateRequest) returns (CalculateResponse) {};
-  rpc ValidateCarringById (ValidateCarryingRequest) returns (ValidateCarryingResponse) {};
 }
