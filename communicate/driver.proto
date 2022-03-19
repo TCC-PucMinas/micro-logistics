@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+option go_package = "/communicate";
+
+message Driver {
+    int64 id = 1;
+    string name = 2;
+    string image = 3;
+    int64 idCarry = 4;
+    int64 idTruck = 5;
+}
+
+message DataDriver {
+    repeated Driver driver = 1;
+}
+
+message DriverListAllRequest {
+    int64 page = 1;
+    int64 limit = 2;
+    string name = 3;
+}
+
+message DriverListAllResponse {
+    DataDriver data = 1;
+    int64 page = 2;
+    int64 limit = 3;
+    int64 total = 4;
+}
+
+
+message CreateDriverRequest {
+    string name = 1;
+    string image = 2;
+    int64 idCarry = 3;
+    int64 idTruck = 4;
+}
+
+message CreateDriverResponse {
+    bool created = 1;
+}
+
+message DeleteDriverByIdRequest {
+    int64 id = 1;
+}
+
+message DeleteDriverByIdResponse {
+    bool deleted = 1;
+}
+
+message UpdateDriverByIdRequest{
+    int64 id = 1;
+    string name = 2;
+    string image = 3;
+    int64 idCarry = 4;
+    int64 idTruck = 5;
+}
+
+message UpdateDriverByIdResponse {
+    bool updated = 1;
+}
+
+message ListOneDriverByIdRequest {
+    int64 id = 1;
+}
+
+message ListOneDriverByIdResponse {
+    Driver driver = 1;
+}
+
+service DriverCommunicate {
+    rpc DriverListAll (DriverListAllRequest) returns (DriverListAllResponse) {};
+    rpc CreateDriver (CreateDriverRequest) returns (CreateDriverResponse) {};
+    rpc ListOneDriverById (ListOneDriverByIdRequest) returns (ListOneDriverByIdResponse) {};
+    rpc UpdateDriverById (UpdateDriverByIdRequest) returns (UpdateDriverByIdResponse) {};
+    rpc DeleteDriverById (DeleteDriverByIdRequest) returns (DeleteDriverByIdResponse) {};
+}

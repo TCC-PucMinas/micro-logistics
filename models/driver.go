@@ -33,7 +33,7 @@ func setRedisCacheDriverGetById(driver *Driver) error {
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("%v - %v", keyTruckRedisGetById, json)
+	key := fmt.Sprintf("%v - %v", keyDriverRedisGetById, json)
 
 	return db.Set(key, json, 1*time.Hour).Err()
 }
@@ -161,7 +161,7 @@ func (driver *Driver) DeleteById() error {
 	return nil
 }
 
-func (driver *Driver) UpdateTruck() error {
+func (driver *Driver) UpdateDriver() error {
 	sql := db.ConnectDatabase()
 
 	query := "update trucks set name = ?, image = ?, id_carring = ?, id_truck = ? where id = ?"
@@ -181,7 +181,7 @@ func (driver *Driver) UpdateTruck() error {
 	return nil
 }
 
-func (driver *Driver) CreateTruck() error {
+func (driver *Driver) CreateDriver() error {
 	sql := db.ConnectDatabase()
 
 	query := "insert into trucks (name, image, id_carring, id_truck) values (?, ?, ?, ?)"

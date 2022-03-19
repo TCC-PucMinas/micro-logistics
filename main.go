@@ -26,6 +26,7 @@ func main() {
 	communicate.RegisterCarryCommunicateServer(grpcServer, &controller.CarryServer{})
 	communicate.RegisterDepositCommunicateServer(grpcServer, &controller.DepositServer{})
 	communicate.RegisterTruckCommunicateServer(grpcServer, &controller.TruckServer{})
+	communicate.RegisterDriverCommunicateServer(grpcServer, &controller.DriverServer{})
 
 	// TODO:criar CRUD do Driver e validação de duplicação por nome!
 

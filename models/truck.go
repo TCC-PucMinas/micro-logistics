@@ -207,7 +207,7 @@ func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) 
 	var truckArray []Truck
 	var total int64
 
-	if c, err := getCarryRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit); err == nil {
+	if c, err := getTruckRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit); err == nil {
 		truckArray = c
 		return truckArray, total, nil
 	}
@@ -250,7 +250,7 @@ func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) 
 	}
 
 	if len(truckArray) > 0 {
-		_ = setCarryRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit, truckArray)
+		_ = setTruckRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit, truckArray)
 	}
 
 	return truckArray, total, nil

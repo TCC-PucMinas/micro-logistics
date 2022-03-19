@@ -8,8 +8,7 @@ import (
 	model "micro-logistic/models"
 )
 
-type TruckServer struct {
-}
+type TruckServer struct{}
 
 func (s *TruckServer) TruckListAll(ctx context.Context, request *communicate.TruckListAllRequest) (*communicate.TruckListAllResponse, error) {
 	res := &communicate.TruckListAllResponse{}
