@@ -1,16 +1,9 @@
 package model
 
 import (
-	"encoding/json"
 	"fmt"
 	"micro-logistic/db"
 	"micro-logistic/helpers"
-	"time"
-)
-
-var (
-	keyTruckRedisGetById              = "key-truck-get-by-id"
-	keyTruckRedisGetPaginateByIdCarry = "key-truck-get-paginate-by-id-carry"
 )
 
 type Truck struct {
@@ -22,95 +15,7 @@ type Truck struct {
 	Carrying Carrying `json:"carrying"`
 }
 
-func setRedisCacheTruckGetById(truck *Truck) error {
-	db, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	json, err := json.Marshal(truck)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v", keyTruckRedisGetById, json)
-
-	return db.Set(key, json, 1*time.Hour).Err()
-}
-
-func getTruckRedisCacheGetOneById(id int64) (Truck, error) {
-	truck := Truck{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return truck, err
-	}
-
-	key := fmt.Sprintf("%v - %v", keyTruckRedisGetById, id)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return truck, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &truck); err != nil {
-		return truck, err
-	}
-
-	return truck, nil
-}
-
-func getTruckRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64) ([]Truck, error) {
-	var truck []Truck
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return truck, err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v - %v", keyTruckRedisGetPaginateByIdCarry, idCarry, page, limit)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return truck, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &truck); err != nil {
-		return truck, err
-	}
-
-	return truck, nil
-}
-
-func setTruckRedisCacheGetOneByIdCarryPaginate(idCarry int64, page, limit int64, truck []Truck) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(truck)
-
-	if err != nil {
-		return err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v - %v", keyTruckRedisGetPaginateByIdCarry, idCarry, page, limit)
-
-	return redis.Set(key, marshal, 1*time.Hour).Err()
-}
-
 func (truck *Truck) GetById(id int64) error {
-
-	if t, err := getTruckRedisCacheGetOneById(id); err == nil {
-		truck = &t
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -134,10 +39,6 @@ func (truck *Truck) GetById(id int64) error {
 			truck.Year = year
 			truck.Carrying.Id = idCarry
 		}
-	}
-
-	if id != 0 {
-		_ = setRedisCacheTruckGetById(truck)
 	}
 
 	return nil
@@ -207,11 +108,6 @@ func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) 
 	var truckArray []Truck
 	var total int64
 
-	if c, err := getTruckRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit); err == nil {
-		truckArray = c
-		return truckArray, total, nil
-	}
-
 	sql := db.ConnectDatabase()
 
 	paginate := helpers.Paginate{
@@ -247,10 +143,6 @@ func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) 
 			truckArray = append(truckArray, truckGet)
 		}
 
-	}
-
-	if len(truckArray) > 0 {
-		_ = setTruckRedisCacheGetOneByIdCarryPaginate(idCarry, page, limit, truckArray)
 	}
 
 	return truckArray, total, nil

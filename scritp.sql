@@ -67,6 +67,27 @@ insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste
 
 
 
+create table couriers (
+    id int unsigned auto_increment primary key,
+    id_driver int unsigned not null,
+    id_product int unsigned not null,
+    FOREIGN KEY (id_driver) REFERENCES drivers(id),
+   `created_at` datetime default now()
+)
+
+
+create table courier_routes(
+    id int unsigned auto_increment primary key,
+    id_courier int unsigned not null,
+    order int default 0,
+    latInit JSON default '{}',
+    latFinish JSON default '{}',
+    delivered boolean default false,
+    FOREIGN KEY (id_courier) REFERENCES couriers(id),
+   `created_at` datetime default now()
+);
+
+
 #
 # create table couriers (
 #     id int unsigned auto_increment primary key,

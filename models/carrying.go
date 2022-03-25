@@ -1,19 +1,11 @@
 package model
 
 import (
-	"encoding/json"
 	"fmt"
 	"micro-logistic/helpers"
 	"strconv"
-	"time"
 
 	"micro-logistic/db"
-)
-
-var (
-	keyCarryingRedisGetById           = "key-carrying-get-by-id"
-	keyCarryingRedisGetByName         = "key-carrying-get-by-name"
-	keyCarryingRedisGetPaginateByName = "key-carrying-get-paginate-by-name"
 )
 
 type Carrying struct {
@@ -30,146 +22,7 @@ type Carrying struct {
 	Lng      string `json:"lng"`
 }
 
-func setRedisCacheCarryingGetById(carry *Carrying) error {
-	db, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	json, err := json.Marshal(carry)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetById, json)
-
-	return db.Set(key, json, 1*time.Hour).Err()
-}
-
-func getCarryingRedisCacheGetOneById(id int64) (Carrying, error) {
-	carrying := Carrying{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return carrying, err
-	}
-
-	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetById, id)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return carrying, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &carrying); err != nil {
-		return carrying, err
-	}
-
-	return carrying, nil
-}
-
-func getCarryRedisCacheGetOneByName(name string) (Carrying, error) {
-	carry := Carrying{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return carry, err
-	}
-
-	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetByName, name)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return carry, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &carry); err != nil {
-		return carry, err
-	}
-
-	return carry, nil
-}
-
-func setRedisCacheCarryGetByNameAndEmail(carry *Carrying) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(carry)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v", keyCarryingRedisGetByName, carry.Name)
-
-	return redis.Set(key, marshal, 1*time.Hour).Err()
-}
-
-func getCarryRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([]Carrying, error) {
-	var carry []Carrying
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return carry, err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v -%v", keyCarryingRedisGetPaginateByName, name, page, limit)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return carry, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &carry); err != nil {
-		return carry, err
-	}
-
-	return carry, nil
-}
-
-func setRedisCacheCarryGetByPaginateByName(name string, page, limit int64, carry []Carrying) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(carry)
-
-	if err != nil {
-		return err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v -%v", keyCarryingRedisGetPaginateByName, name, page, limit)
-
-	return redis.Set(key, marshal, 1*time.Hour).Err()
-}
-
 func (carrying *Carrying) GetById(id int64) error {
-
-	if c, err := getCarryingRedisCacheGetOneById(id); err == nil {
-		carrying.City = c.City
-		carrying.Country = c.Country
-		carrying.District = c.District
-		carrying.Id = c.Id
-		carrying.Lat = c.Lat
-		carrying.Lng = c.Lng
-		carrying.Name = c.Name
-		carrying.Number = c.Number
-		carrying.State = c.State
-		carrying.Street = c.Street
-		carrying.ZipCode = c.ZipCode
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -198,17 +51,10 @@ func (carrying *Carrying) GetById(id int64) error {
 		carrying.Lng = lng
 	}
 
-	_ = setRedisCacheCarryingGetById(carrying)
-
 	return nil
 }
 
 func (carrying *Carrying) GetByName(name string) error {
-
-	if c, err := getCarryRedisCacheGetOneByName(carrying.Name); err == nil {
-		carrying = &c
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -236,8 +82,6 @@ func (carrying *Carrying) GetByName(name string) error {
 		carrying.Lat = lat
 		carrying.Lng = lng
 	}
-
-	_ = setRedisCacheCarryGetByNameAndEmail(carrying)
 
 	return nil
 }
@@ -306,11 +150,6 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 	var carryArray []Carrying
 	var total int64
 
-	if c, err := getCarryRedisCacheGetOneByNamePaginate(name, page, limit); err == nil {
-		carryArray = c
-		return carryArray, total, nil
-	}
-
 	name = "%" + name + "%"
 
 	sql := db.ConnectDatabase()
@@ -354,8 +193,6 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 		}
 
 	}
-
-	_ = setRedisCacheCarryGetByPaginateByName(name, page, limit, carryArray)
 
 	return carryArray, total, nil
 }

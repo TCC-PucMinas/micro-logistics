@@ -1,12 +1,10 @@
 package model
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"micro-logistic/db"
 	"micro-logistic/helpers"
-	"time"
 )
 
 type Driver struct {
@@ -17,146 +15,7 @@ type Driver struct {
 	Truck    Truck    `json:"truck"`
 }
 
-var (
-	keyDriverRedisGetById                     = "key-driver-get-by-id"
-	keyDriverRedisGetByNameAndIdCarry         = "key-driver-get-by-name-and-id-carry"
-	keyDriverRedisGetPaginateByNameAndIdCarry = "key-driver-get-paginate-by-name-and-id-carry"
-)
-
-func setRedisCacheDriverGetById(driver *Driver) error {
-	db, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	json, err := json.Marshal(driver)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v", keyDriverRedisGetById, driver.Id)
-
-	return db.Set(key, json, 1*time.Hour).Err()
-}
-
-func getDriverRedisCacheGetOneById(id int64) (Driver, error) {
-	driver := Driver{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return driver, err
-	}
-
-	key := fmt.Sprintf("%v - %v", keyDriverRedisGetById, id)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return driver, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &driver); err != nil {
-		return driver, err
-	}
-
-	return driver, nil
-}
-
-func setRedisCacheDriverGetByNameAndIdCarry(driver *Driver) error {
-	db, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	json, err := json.Marshal(driver)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v - %v", keyDriverRedisGetByNameAndIdCarry, driver.Name, driver.Carrying.Id)
-
-	return db.Set(key, json, 1*time.Hour).Err()
-}
-
-func getDriverRedisCacheGetOneByNameAndIdCarry(name string, idCarry int64) (Driver, error) {
-	driver := Driver{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return driver, err
-	}
-
-	key := fmt.Sprintf("%v - %v - %v", keyDriverRedisGetByNameAndIdCarry, name, idCarry)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return driver, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &driver); err != nil {
-		return driver, err
-	}
-
-	return driver, nil
-}
-
-func getRedisDriverPaginateByNameAndIdCarry(name string, idCarry, page, limit int64) ([]Driver, error) {
-	var driver []Driver
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return driver, err
-	}
-
-	key := fmt.Sprintf("%v - %v - %v - %v - %v", keyDriverRedisGetPaginateByNameAndIdCarry, name, idCarry, page, limit)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return driver, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &driver); err != nil {
-		return driver, err
-	}
-
-	return driver, nil
-}
-
-func setRedisDriverPaginateByNameAndIdCarry(name string, idCarry, page, limit int64, driver []Driver) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(driver)
-
-	if err != nil {
-		return err
-	}
-
-	key := fmt.Sprintf("%v - %v - %v - %v - %v", keyDriverRedisGetPaginateByNameAndIdCarry, name, idCarry, page, limit)
-
-	return redis.Set(key, marshal, 1*time.Hour).Err()
-}
-
 func (driver *Driver) GetById(id int64) error {
-
-	if t, err := getDriverRedisCacheGetOneById(id); err == nil {
-		driver.Id = t.Id
-		driver.Name = t.Name
-		driver.Image = t.Image
-		driver.Truck = t.Truck
-		driver.Carrying = t.Carrying
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -182,23 +41,10 @@ func (driver *Driver) GetById(id int64) error {
 		}
 	}
 
-	if driver.Id != 0 {
-		_ = setRedisCacheDriverGetById(driver)
-	}
-
 	return nil
 }
 
 func (driver *Driver) GetByNameAndIdCarry(name string, idCarry int64) error {
-
-	// if t, err := getDriverRedisCacheGetOneByNameAndIdCarry(name, idCarry); err == nil {
-	// 	driver.Id = t.Id
-	// 	driver.Name = t.Name
-	// 	driver.Image = t.Image
-	// 	driver.Truck = t.Truck
-	// 	driver.Carrying = t.Carrying
-	// 	return nil
-	// }
 
 	sql := db.ConnectDatabase()
 
@@ -221,10 +67,6 @@ func (driver *Driver) GetByNameAndIdCarry(name string, idCarry int64) error {
 			driver.Carrying.Id = idCarry
 			driver.Truck.Id = idTruck
 		}
-	}
-
-	if driver.Id != 0 {
-		_ = setRedisCacheDriverGetByNameAndIdCarry(driver)
 	}
 
 	return nil
@@ -294,10 +136,6 @@ func (driver *Driver) GetDriverPaginateByNameAndIdCarry(name string, idCarry int
 	var driverArray []Driver
 	var total int64
 
-	if c, err := getRedisDriverPaginateByNameAndIdCarry(name, idCarry, page, limit); err == nil {
-		return c, total, nil
-	}
-
 	sql := db.ConnectDatabase()
 
 	paginate := helpers.Paginate{
@@ -330,10 +168,6 @@ func (driver *Driver) GetDriverPaginateByNameAndIdCarry(name string, idCarry int
 			driverGet.Truck.Id = idTruck
 			driverArray = append(driverArray, driverGet)
 		}
-	}
-
-	if len(driverArray) > 0 {
-		_ = setRedisDriverPaginateByNameAndIdCarry(name, idCarry, page, limit, driverArray)
 	}
 
 	return driverArray, total, nil

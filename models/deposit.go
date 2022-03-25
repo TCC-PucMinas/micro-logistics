@@ -1,20 +1,12 @@
 package model
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"micro-logistic/helpers"
 	"strconv"
-	"time"
 
 	"micro-logistic/db"
-)
-
-var (
-	keyDepositRedisGetById           = "key-deposit-get-by-id"
-	keyDepositRedisGetByName         = "key-deposit-get-by-name"
-	keyDepositRedisGetPaginateByName = "key-deposit-get-paginate-by-name"
 )
 
 type Deposit struct {
@@ -32,136 +24,7 @@ type Deposit struct {
 	Carrying Carrying `json:"carrying"`
 }
 
-func setRedisCacheDepositgGetById(deposit *Deposit) error {
-	db, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	json, err := json.Marshal(deposit)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v", keyDepositRedisGetById, json)
-
-	return db.Set(key, json, 1*time.Minute).Err()
-}
-
-func getDepositRedisCacheGetOneById(id int64) (Deposit, error) {
-	deposit := Deposit{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	key := fmt.Sprintf("%v - %v", keyDepositRedisGetById, id)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &deposit); err != nil {
-		return deposit, err
-	}
-
-	return deposit, nil
-}
-
-func getDepositRedisCacheGetOneByNameAndCarry(name string, idCarry int64) (Deposit, error) {
-	deposit := Deposit{}
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	key := fmt.Sprintf("%v - %v - %v", keyDepositRedisGetByName, name, idCarry)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &deposit); err != nil {
-		return deposit, err
-	}
-
-	return deposit, nil
-}
-
-func setRedisCacheDepositGetByNameAndEmail(deposit *Deposit) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(deposit)
-
-	if err != nil {
-		return err
-	}
-	key := fmt.Sprintf("%v - %v -%v", keyDepositRedisGetByName, deposit.Name, deposit.Carrying.Id)
-
-	return redis.Set(key, marshal, 1*time.Minute).Err()
-}
-
-func getDepositRedisCacheGetOneByNamePaginate(name string, page, limit int64) ([]Deposit, error) {
-	var deposit []Deposit
-
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v -%v", keyDepositRedisGetPaginateByName, name, page, limit)
-
-	value, err := redis.Get(key).Result()
-
-	if err != nil {
-		return deposit, err
-	}
-
-	if err := json.Unmarshal([]byte(value), &deposit); err != nil {
-		return deposit, err
-	}
-
-	return deposit, nil
-}
-
-func setRedisCacheDepositGetByPaginateByName(name string, page, limit int64, deposit []Deposit) error {
-	redis, err := db.ConnectDatabaseRedis()
-
-	if err != nil {
-		return err
-	}
-
-	marshal, err := json.Marshal(deposit)
-
-	if err != nil {
-		return err
-	}
-
-	key := fmt.Sprintf("%v - %v -%v -%v", keyDepositRedisGetPaginateByName, name, page, limit)
-
-	return redis.Set(key, marshal, 1*time.Minute).Err()
-}
-
 func (deposit *Deposit) GetById(id int64) error {
-
-	if c, err := getDepositRedisCacheGetOneById(id); err == nil {
-		deposit = &c
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -194,17 +57,10 @@ func (deposit *Deposit) GetById(id int64) error {
 		return errors.New("Not found key")
 	}
 
-	_ = setRedisCacheDepositgGetById(deposit)
-
 	return nil
 }
 
 func (deposit *Deposit) GetByNameAndIdCarry(name string, idCarry int64) error {
-
-	if c, err := getDepositRedisCacheGetOneByNameAndCarry(name, idCarry); err == nil {
-		deposit = &c
-		return nil
-	}
 
 	sql := db.ConnectDatabase()
 
@@ -233,8 +89,6 @@ func (deposit *Deposit) GetByNameAndIdCarry(name string, idCarry int64) error {
 		deposit.Lng = lng
 		deposit.Carrying.Id = idCarry
 	}
-
-	_ = setRedisCacheDepositGetByNameAndEmail(deposit)
 
 	return nil
 }
@@ -303,11 +157,6 @@ func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64)
 	var depositArray []Deposit
 	var total int64
 
-	if c, err := getDepositRedisCacheGetOneByNamePaginate(name, page, limit); err == nil {
-		depositArray = c
-		return depositArray, total, nil
-	}
-
 	name = "%" + name + "%"
 
 	sql := db.ConnectDatabase()
@@ -349,8 +198,6 @@ func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64)
 
 		depositArray = append(depositArray, depositGet)
 	}
-
-	_ = setRedisCacheDepositGetByPaginateByName(name, page, limit, depositArray)
 
 	return depositArray, total, nil
 }
