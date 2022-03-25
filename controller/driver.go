@@ -3,18 +3,33 @@ package controller
 import (
 	"context"
 	"errors"
+	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 )
 
 type DriverServer struct{}
 
+func (d *DriverServer) ValidateDriverExistByNameAndIdCarry(ctx context.Context, request *communicate.ValidateDriverExistByNameAndIdCarryRequest) (*communicate.ValidateDriverExistByNameAndIdCarryResponse, error) {
+	res := &communicate.ValidateDriverExistByNameAndIdCarryResponse{Valid: false}
+
+	driver := model.Driver{}
+
+	if err := driver.GetByNameAndIdCarry(request.Name, request.IdCarry); err != nil || driver.Id > 0 {
+		return res, nil
+	}
+
+	res.Valid = true
+
+	return res, nil
+}
+
 func (d *DriverServer) DriverListAll(ctx context.Context, request *communicate.DriverListAllRequest) (*communicate.DriverListAllResponse, error) {
 	res := &communicate.DriverListAllResponse{}
 
 	var driver model.Driver
 
-	drivers, total, err := driver.GetTruckByIdDriverPaginateByName(request.Name, request.Page, request.Limit)
+	drivers, total, err := driver.GetDriverPaginateByNameAndIdCarry(request.Name, request.IdCarry, request.Page, request.Limit)
 
 	if err != nil {
 		return res, err
@@ -71,6 +86,7 @@ func (d *DriverServer) CreateDriver(ctx context.Context, request *communicate.Cr
 	}
 
 	if err := driver.CreateDriver(); err != nil {
+		log.Println("driver.creating", err)
 		return res, errors.New("Error creating driver!")
 	}
 

@@ -67,8 +67,6 @@ insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste
 
 
 
-
-
 #
 # create table couriers (
 #     id int unsigned auto_increment primary key,
@@ -78,3 +76,5 @@ insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste
 # 	FOREIGN KEY (id_product) REFERENCES products(id),
 #     `created_at` datetime default now()
 # );
+
+--  Routas de entrega

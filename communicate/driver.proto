@@ -18,6 +18,7 @@ message DriverListAllRequest {
     int64 page = 1;
     int64 limit = 2;
     string name = 3;
+    int64 idCarry = 4;
 }
 
 message DriverListAllResponse {
@@ -67,7 +68,17 @@ message ListOneDriverByIdResponse {
     Driver driver = 1;
 }
 
+message ValidateDriverExistByNameAndIdCarryRequest {
+    string name = 1;
+    int64 idCarry = 2;
+}
+
+message ValidateDriverExistByNameAndIdCarryResponse {
+    bool valid = 1;
+}
+
 service DriverCommunicate {
+    rpc ValidateDriverExistByNameAndIdCarry (ValidateDriverExistByNameAndIdCarryRequest) returns (ValidateDriverExistByNameAndIdCarryResponse) {};
     rpc DriverListAll (DriverListAllRequest) returns (DriverListAllResponse) {};
     rpc CreateDriver (CreateDriverRequest) returns (CreateDriverResponse) {};
     rpc ListOneDriverById (ListOneDriverByIdRequest) returns (ListOneDriverByIdResponse) {};

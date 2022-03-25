@@ -183,7 +183,7 @@ func (s *CarryServer) ValidateCarryById(ctx context.Context, request *communicat
 
 	carry := model.Carrying{}
 
-	if err := carry.GetById(request.IdCarry); err != nil {
+	if err := carry.GetById(request.IdCarry); err != nil || carry.Id == 0 {
 		return res, errors.New("Carrying Id invalid!")
 	}
 

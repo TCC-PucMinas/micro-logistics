@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"micro-logistic/db"
 	"micro-logistic/helpers"
 	"time"
@@ -17,8 +18,9 @@ type Driver struct {
 }
 
 var (
-	keyDriverRedisGetById           = "key-driver-get-by-id"
-	keyDriverRedisGetPaginateByName = "key-driver-get-paginate-by-name"
+	keyDriverRedisGetById                     = "key-driver-get-by-id"
+	keyDriverRedisGetByNameAndIdCarry         = "key-driver-get-by-name-and-id-carry"
+	keyDriverRedisGetPaginateByNameAndIdCarry = "key-driver-get-paginate-by-name-and-id-carry"
 )
 
 func setRedisCacheDriverGetById(driver *Driver) error {
@@ -33,7 +35,7 @@ func setRedisCacheDriverGetById(driver *Driver) error {
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("%v - %v", keyDriverRedisGetById, json)
+	key := fmt.Sprintf("%v - %v", keyDriverRedisGetById, driver.Id)
 
 	return db.Set(key, json, 1*time.Hour).Err()
 }
@@ -62,8 +64,25 @@ func getDriverRedisCacheGetOneById(id int64) (Driver, error) {
 	return driver, nil
 }
 
-func getDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64) ([]Driver, error) {
-	var driver []Driver
+func setRedisCacheDriverGetByNameAndIdCarry(driver *Driver) error {
+	db, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return err
+	}
+
+	json, err := json.Marshal(driver)
+
+	if err != nil {
+		return err
+	}
+	key := fmt.Sprintf("%v - %v - %v", keyDriverRedisGetByNameAndIdCarry, driver.Name, driver.Carrying.Id)
+
+	return db.Set(key, json, 1*time.Hour).Err()
+}
+
+func getDriverRedisCacheGetOneByNameAndIdCarry(name string, idCarry int64) (Driver, error) {
+	driver := Driver{}
 
 	redis, err := db.ConnectDatabaseRedis()
 
@@ -71,7 +90,7 @@ func getDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64)
 		return driver, err
 	}
 
-	key := fmt.Sprintf("%v - %v - %v - %v", keyDriverRedisGetPaginateByName, name, page, limit)
+	key := fmt.Sprintf("%v - %v - %v", keyDriverRedisGetByNameAndIdCarry, name, idCarry)
 
 	value, err := redis.Get(key).Result()
 
@@ -86,7 +105,31 @@ func getDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64)
 	return driver, nil
 }
 
-func setDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64, driver []Driver) error {
+func getRedisDriverPaginateByNameAndIdCarry(name string, idCarry, page, limit int64) ([]Driver, error) {
+	var driver []Driver
+
+	redis, err := db.ConnectDatabaseRedis()
+
+	if err != nil {
+		return driver, err
+	}
+
+	key := fmt.Sprintf("%v - %v - %v - %v - %v", keyDriverRedisGetPaginateByNameAndIdCarry, name, idCarry, page, limit)
+
+	value, err := redis.Get(key).Result()
+
+	if err != nil {
+		return driver, err
+	}
+
+	if err := json.Unmarshal([]byte(value), &driver); err != nil {
+		return driver, err
+	}
+
+	return driver, nil
+}
+
+func setRedisDriverPaginateByNameAndIdCarry(name string, idCarry, page, limit int64, driver []Driver) error {
 	redis, err := db.ConnectDatabaseRedis()
 
 	if err != nil {
@@ -99,7 +142,7 @@ func setDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64,
 		return err
 	}
 
-	key := fmt.Sprintf("%v - %v - %v - %v", keyDriverRedisGetPaginateByName, name, page, limit)
+	key := fmt.Sprintf("%v - %v - %v - %v - %v", keyDriverRedisGetPaginateByNameAndIdCarry, name, idCarry, page, limit)
 
 	return redis.Set(key, marshal, 1*time.Hour).Err()
 }
@@ -107,7 +150,11 @@ func setDriverRedisCacheGetOneByIdDriverPaginate(name string, page, limit int64,
 func (driver *Driver) GetById(id int64) error {
 
 	if t, err := getDriverRedisCacheGetOneById(id); err == nil {
-		driver = &t
+		driver.Id = t.Id
+		driver.Name = t.Name
+		driver.Image = t.Image
+		driver.Truck = t.Truck
+		driver.Carrying = t.Carrying
 		return nil
 	}
 
@@ -115,6 +162,7 @@ func (driver *Driver) GetById(id int64) error {
 
 	query := `select id, name, image, id_carring, id_truck from drivers where id = ? limit 1;`
 
+	log.Println("id", id)
 	requestConfig, err := sql.Query(query, id)
 
 	if err != nil {
@@ -136,6 +184,47 @@ func (driver *Driver) GetById(id int64) error {
 
 	if driver.Id != 0 {
 		_ = setRedisCacheDriverGetById(driver)
+	}
+
+	return nil
+}
+
+func (driver *Driver) GetByNameAndIdCarry(name string, idCarry int64) error {
+
+	// if t, err := getDriverRedisCacheGetOneByNameAndIdCarry(name, idCarry); err == nil {
+	// 	driver.Id = t.Id
+	// 	driver.Name = t.Name
+	// 	driver.Image = t.Image
+	// 	driver.Truck = t.Truck
+	// 	driver.Carrying = t.Carrying
+	// 	return nil
+	// }
+
+	sql := db.ConnectDatabase()
+
+	query := `select id, name, image, id_carring, id_truck from drivers where name = ? and id_carring = ?  limit 1;`
+
+	requestConfig, err := sql.Query(query, name, idCarry)
+
+	if err != nil {
+		return err
+	}
+
+	for requestConfig.Next() {
+		var name, image string
+		var id, idCarry, idTruck int64
+		_ = requestConfig.Scan(&id, &name, &image, &idCarry, &idTruck)
+		if id != 0 {
+			driver.Id = id
+			driver.Name = name
+			driver.Image = image
+			driver.Carrying.Id = idCarry
+			driver.Truck.Id = idTruck
+		}
+	}
+
+	if driver.Id != 0 {
+		_ = setRedisCacheDriverGetByNameAndIdCarry(driver)
 	}
 
 	return nil
@@ -164,7 +253,7 @@ func (driver *Driver) DeleteById() error {
 func (driver *Driver) UpdateDriver() error {
 	sql := db.ConnectDatabase()
 
-	query := "update trucks set name = ?, image = ?, id_carring = ?, id_truck = ? where id = ?"
+	query := "update drivers set name = ?, image = ?, id_carring = ?, id_truck = ? where id = ?"
 
 	destinationUpdate, err := sql.Prepare(query)
 
@@ -184,7 +273,7 @@ func (driver *Driver) UpdateDriver() error {
 func (driver *Driver) CreateDriver() error {
 	sql := db.ConnectDatabase()
 
-	query := "insert into trucks (name, image, id_carring, id_truck) values (?, ?, ?, ?)"
+	query := "insert into drivers (name, image, id_carring, id_truck) values (?, ?, ?, ?)"
 
 	createDestination, err := sql.Prepare(query)
 
@@ -201,13 +290,12 @@ func (driver *Driver) CreateDriver() error {
 	return nil
 }
 
-func (driver *Driver) GetTruckByIdDriverPaginateByName(name string, page, limit int64) ([]Driver, int64, error) {
+func (driver *Driver) GetDriverPaginateByNameAndIdCarry(name string, idCarry int64, page, limit int64) ([]Driver, int64, error) {
 	var driverArray []Driver
 	var total int64
 
-	if c, err := getDriverRedisCacheGetOneByIdDriverPaginate(name, page, limit); err == nil {
-		driverArray = c
-		return driverArray, total, nil
+	if c, err := getRedisDriverPaginateByNameAndIdCarry(name, idCarry, page, limit); err == nil {
+		return c, total, nil
 	}
 
 	sql := db.ConnectDatabase()
@@ -221,9 +309,9 @@ func (driver *Driver) GetTruckByIdDriverPaginateByName(name string, page, limit 
 	paginate.PaginateMounted()
 	paginate.MountedQuery("drivers")
 
-	query := fmt.Sprintf("select id, name, image, id_carring, id_truck  %v from drivers where name like ? LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf("select id, name, image, id_carring, id_truck, %v from drivers where name like ? and id_carring = ? LIMIT ? OFFSET ?;", paginate.Query)
 
-	requestConfig, err := sql.Query(query, name, paginate.Limit, paginate.Page)
+	requestConfig, err := sql.Query(query, name, idCarry, paginate.Limit, paginate.Page)
 
 	if err != nil {
 		return driverArray, total, err
@@ -233,7 +321,7 @@ func (driver *Driver) GetTruckByIdDriverPaginateByName(name string, page, limit 
 		driverGet := Driver{}
 		var name, image string
 		var id, idCarry, idTruck int64
-		_ = requestConfig.Scan(&id, &name, &image, &idCarry, &idTruck)
+		_ = requestConfig.Scan(&id, &name, &image, &idCarry, &idTruck, &total)
 		if id != 0 {
 			driverGet.Id = id
 			driverGet.Name = name
@@ -245,7 +333,7 @@ func (driver *Driver) GetTruckByIdDriverPaginateByName(name string, page, limit 
 	}
 
 	if len(driverArray) > 0 {
-		_ = setDriverRedisCacheGetOneByIdDriverPaginate(name, page, limit, driverArray)
+		_ = setRedisDriverPaginateByNameAndIdCarry(name, idCarry, page, limit, driverArray)
 	}
 
 	return driverArray, total, nil
