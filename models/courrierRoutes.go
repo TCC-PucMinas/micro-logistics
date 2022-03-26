@@ -75,3 +75,23 @@ func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
 	}
 	return courierRoutesArray, nil
 }
+
+func (courierRoute *CourierRoute) UpdateByCourierId() error {
+	sql := db.ConnectDatabase()
+
+	query := "update courier_routes set `order` = ?, `latInit` = ?, `latFinish`= ? where id_courier = ?"
+
+	destinationUpdate, err := sql.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	_, e := destinationUpdate.Exec(courierRoute.Order, courierRoute.LatFinish.StructToString(), courierRoute.LatFinish.StructToString(), courierRoute.Courier.Id)
+
+	if e != nil {
+		return e
+	}
+
+	return nil
+}

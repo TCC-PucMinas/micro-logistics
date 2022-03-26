@@ -141,3 +141,51 @@ func GetLocationDeposit(request model.Deposit) (string, string, error) {
 
 	return location.Lat, location.Lng, nil
 }
+
+func attempRetryLatencyOrderRoutes(retry int, location *communicate.OrderRoutesResponse, err error, c *communicate.OrderRoutesRequest) (*communicate.OrderRoutesResponse, error) {
+	if retry <= attemptRetry {
+		return integrationOrderRoutes(c, retry)
+	}
+	return location, err
+}
+
+func integrationOrderRoutes(c *communicate.OrderRoutesRequest, retry int) (*communicate.OrderRoutesResponse, error) {
+	ctx := context.Background()
+	connGeolocation, err := grpc.Dial(":7000", grpc.WithInsecure())
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer connGeolocation.Close()
+
+	serviceLocation := communicate.NewGelocationCommunicateClient(connGeolocation)
+
+	location, err := serviceLocation.OrderRoutes(ctx, c)
+
+	if err != nil {
+		return attempRetryLatencyOrderRoutes(retry, location, err, c)
+	}
+
+	return location, nil
+}
+
+func OrderRoutes(routes []Routes) (*communicate.OrderRoutesResponse, error) {
+
+	arrayRoutes := []*communicate.Routes{}
+
+	for _, v := range routes {
+		routeCom := &communicate.Routes{
+			Origin:    &communicate.LatAndLng{Lat: v.Origin.Lat, Lng: v.Origin.Lng},
+			Order:     v.Order,
+			IdCourier: v.IdCourier,
+			Destiny:   &communicate.LatAndLng{Lat: v.Destiny.Lat, Lng: v.Destiny.Lng},
+		}
+		arrayRoutes = append(arrayRoutes, routeCom)
+	}
+
+	request := &communicate.OrderRoutesRequest{Routes: arrayRoutes}
+
+	return integrationOrderRoutes(request, 1)
+
+}

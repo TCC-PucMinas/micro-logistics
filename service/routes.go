@@ -30,20 +30,35 @@ func (r *Routes) TracingRoutes() error {
 		return err
 	}
 
-	if len(arrayCourierRoute) == 1 {
-		return nil
-	}
+	// if len(arrayCourierRoute) == 1 {
+	// 	return nil
+	// }
 
 	for _, v := range arrayCourierRoute {
 		routeAp := Routes{}
-		routeAp.IdCourier = v.Id
+		routeAp.IdCourier = v.Courier.Id
 		routeAp.Order = v.Order
 		routeAp.Origin = LatAndLng(v.LatInit)
 		routeAp.Destiny = LatAndLng(v.LatFinish)
 		arrayRoutes = append(arrayRoutes, routeAp)
 	}
 
-	// enviar para o maps os registro para ser traçados.
+	location, err := OrderRoutes(arrayRoutes)
+
+	if err != nil {
+		return err
+	}
+
+	for _, v := range location.Routes {
+		routeAp := NewRoutes(r.courierRoute)
+		routeAp.courierRoute.Courier.Id = v.IdCourier
+		routeAp.courierRoute.Order = 1
+		routeAp.courierRoute.LatInit.Lat = v.Origin.Lat
+		routeAp.courierRoute.LatInit.Lng = v.Origin.Lng
+		routeAp.courierRoute.LatFinish.Lat = v.Destiny.Lat
+		routeAp.courierRoute.LatFinish.Lng = v.Destiny.Lng
+		go routeAp.courierRoute.UpdateByCourierId()
+	}
 
 	return nil
 }

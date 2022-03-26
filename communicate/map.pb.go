@@ -35,7 +35,7 @@ type GelocationRequest struct {
 	Country  string `protobuf:"bytes,4,opt,name=country,proto3" json:"country,omitempty"`
 	State    string `protobuf:"bytes,5,opt,name=state,proto3" json:"state,omitempty"`
 	Number   string `protobuf:"bytes,6,opt,name=number,proto3" json:"number,omitempty"`
-	ZipCode  string `protobuf:"bytes,7,opt,name=ZipCode,proto3" json:"ZipCode,omitempty"`
+	ZipCode  string `protobuf:"bytes,7,opt,name=zipCode,proto3" json:"zipCode,omitempty"`
 }
 
 func (x *GelocationRequest) Reset() {
@@ -355,6 +355,171 @@ func (x *DirectionLocationResponse) GetMeters() int64 {
 	return 0
 }
 
+type Routes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Origin    *LatAndLng `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Destiny   *LatAndLng `protobuf:"bytes,2,opt,name=destiny,proto3" json:"destiny,omitempty"`
+	IdCourier int64      `protobuf:"varint,3,opt,name=idCourier,proto3" json:"idCourier,omitempty"`
+	Order     int64      `protobuf:"varint,4,opt,name=order,proto3" json:"order,omitempty"`
+}
+
+func (x *Routes) Reset() {
+	*x = Routes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_communicate_map_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Routes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Routes) ProtoMessage() {}
+
+func (x *Routes) ProtoReflect() protoreflect.Message {
+	mi := &file_communicate_map_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Routes.ProtoReflect.Descriptor instead.
+func (*Routes) Descriptor() ([]byte, []int) {
+	return file_communicate_map_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Routes) GetOrigin() *LatAndLng {
+	if x != nil {
+		return x.Origin
+	}
+	return nil
+}
+
+func (x *Routes) GetDestiny() *LatAndLng {
+	if x != nil {
+		return x.Destiny
+	}
+	return nil
+}
+
+func (x *Routes) GetIdCourier() int64 {
+	if x != nil {
+		return x.IdCourier
+	}
+	return 0
+}
+
+func (x *Routes) GetOrder() int64 {
+	if x != nil {
+		return x.Order
+	}
+	return 0
+}
+
+type OrderRoutesRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Routes []*Routes `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+}
+
+func (x *OrderRoutesRequest) Reset() {
+	*x = OrderRoutesRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_communicate_map_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OrderRoutesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OrderRoutesRequest) ProtoMessage() {}
+
+func (x *OrderRoutesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_communicate_map_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OrderRoutesRequest.ProtoReflect.Descriptor instead.
+func (*OrderRoutesRequest) Descriptor() ([]byte, []int) {
+	return file_communicate_map_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *OrderRoutesRequest) GetRoutes() []*Routes {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
+type OrderRoutesResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Routes []*Routes `protobuf:"bytes,1,rep,name=routes,proto3" json:"routes,omitempty"`
+}
+
+func (x *OrderRoutesResponse) Reset() {
+	*x = OrderRoutesResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_communicate_map_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OrderRoutesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OrderRoutesResponse) ProtoMessage() {}
+
+func (x *OrderRoutesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_communicate_map_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OrderRoutesResponse.ProtoReflect.Descriptor instead.
+func (*OrderRoutesResponse) Descriptor() ([]byte, []int) {
+	return file_communicate_map_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *OrderRoutesResponse) GetRoutes() []*Routes {
+	if x != nil {
+		return x.Routes
+	}
+	return nil
+}
+
 var File_communicate_map_proto protoreflect.FileDescriptor
 
 var file_communicate_map_proto_rawDesc = []byte{
@@ -370,8 +535,8 @@ var file_communicate_map_proto_rawDesc = []byte{
 	0x14, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
 	0x73, 0x74, 0x61, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18,
 	0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x12, 0x18, 0x0a,
-	0x07, 0x5a, 0x69, 0x70, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x5a, 0x69, 0x70, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x38, 0x0a, 0x12, 0x47, 0x65, 0x6c, 0x6f, 0x63,
+	0x07, 0x7a, 0x69, 0x70, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x7a, 0x69, 0x70, 0x43, 0x6f, 0x64, 0x65, 0x22, 0x38, 0x0a, 0x12, 0x47, 0x65, 0x6c, 0x6f, 0x63,
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a,
 	0x03, 0x6c, 0x61, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x61, 0x74, 0x12,
 	0x10, 0x0a, 0x03, 0x6c, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x6e,
@@ -394,19 +559,38 @@ var file_communicate_map_proto_rawDesc = []byte{
 	0x12, 0x24, 0x0a, 0x0d, 0x48, 0x75, 0x6d, 0x61, 0x6e, 0x52, 0x65, 0x61, 0x64, 0x61, 0x62, 0x6c,
 	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x48, 0x75, 0x6d, 0x61, 0x6e, 0x52, 0x65,
 	0x61, 0x64, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x4d, 0x65, 0x74, 0x65, 0x72, 0x73,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x4d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x32, 0x9f,
-	0x01, 0x0a, 0x15, 0x47, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x6d,
-	0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x38, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x4c,
-	0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x2e, 0x47, 0x65, 0x6c, 0x6f, 0x63, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x47, 0x65,
-	0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x12, 0x4c, 0x0a, 0x11, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c,
-	0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x42, 0x0e, 0x5a, 0x0c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x4d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x22, 0x86,
+	0x01, 0x0a, 0x06, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x12, 0x22, 0x0a, 0x06, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x4c, 0x61, 0x74, 0x41,
+	0x6e, 0x64, 0x4c, 0x6e, 0x67, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x24, 0x0a,
+	0x07, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a,
+	0x2e, 0x4c, 0x61, 0x74, 0x41, 0x6e, 0x64, 0x4c, 0x6e, 0x67, 0x52, 0x07, 0x64, 0x65, 0x73, 0x74,
+	0x69, 0x6e, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x64, 0x43, 0x6f, 0x75, 0x72, 0x69, 0x65, 0x72,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x69, 0x64, 0x43, 0x6f, 0x75, 0x72, 0x69, 0x65,
+	0x72, 0x12, 0x14, 0x0a, 0x05, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x05, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x22, 0x35, 0x0a, 0x12, 0x4f, 0x72, 0x64, 0x65, 0x72,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a,
+	0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x07, 0x2e,
+	0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x22, 0x36,
+	0x0a, 0x13, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x06,
+	0x72, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x32, 0xdb, 0x01, 0x0a, 0x15, 0x47, 0x65, 0x6c, 0x6f, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69, 0x63, 0x61, 0x74, 0x65,
+	0x12, 0x38, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x12, 0x2e, 0x47, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x47, 0x65, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x4c, 0x0a, 0x11, 0x44, 0x69,
+	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x19, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x44, 0x69, 0x72,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x0b, 0x4f, 0x72, 0x64, 0x65,
+	0x72, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x12, 0x13, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x52,
+	0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x75, 0x6e, 0x69,
+	0x63, 0x61, 0x74, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -421,28 +605,37 @@ func file_communicate_map_proto_rawDescGZIP() []byte {
 	return file_communicate_map_proto_rawDescData
 }
 
-var file_communicate_map_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_communicate_map_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_communicate_map_proto_goTypes = []interface{}{
 	(*GelocationRequest)(nil),         // 0: GelocationRequest
 	(*GelocationResponse)(nil),        // 1: GelocationResponse
 	(*LatAndLng)(nil),                 // 2: LatAndLng
 	(*DirectionLocationRequest)(nil),  // 3: DirectionLocationRequest
 	(*DirectionLocationResponse)(nil), // 4: DirectionLocationResponse
+	(*Routes)(nil),                    // 5: Routes
+	(*OrderRoutesRequest)(nil),        // 6: OrderRoutesRequest
+	(*OrderRoutesResponse)(nil),       // 7: OrderRoutesResponse
 }
 var file_communicate_map_proto_depIdxs = []int32{
-	2, // 0: DirectionLocationRequest.origin:type_name -> LatAndLng
-	2, // 1: DirectionLocationRequest.destiny:type_name -> LatAndLng
-	2, // 2: DirectionLocationResponse.origin:type_name -> LatAndLng
-	2, // 3: DirectionLocationResponse.destiny:type_name -> LatAndLng
-	0, // 4: GelocationCommunicate.GetLocation:input_type -> GelocationRequest
-	3, // 5: GelocationCommunicate.DirectionLocation:input_type -> DirectionLocationRequest
-	1, // 6: GelocationCommunicate.GetLocation:output_type -> GelocationResponse
-	4, // 7: GelocationCommunicate.DirectionLocation:output_type -> DirectionLocationResponse
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2,  // 0: DirectionLocationRequest.origin:type_name -> LatAndLng
+	2,  // 1: DirectionLocationRequest.destiny:type_name -> LatAndLng
+	2,  // 2: DirectionLocationResponse.origin:type_name -> LatAndLng
+	2,  // 3: DirectionLocationResponse.destiny:type_name -> LatAndLng
+	2,  // 4: Routes.origin:type_name -> LatAndLng
+	2,  // 5: Routes.destiny:type_name -> LatAndLng
+	5,  // 6: OrderRoutesRequest.routes:type_name -> Routes
+	5,  // 7: OrderRoutesResponse.routes:type_name -> Routes
+	0,  // 8: GelocationCommunicate.GetLocation:input_type -> GelocationRequest
+	3,  // 9: GelocationCommunicate.DirectionLocation:input_type -> DirectionLocationRequest
+	6,  // 10: GelocationCommunicate.OrderRoutes:input_type -> OrderRoutesRequest
+	1,  // 11: GelocationCommunicate.GetLocation:output_type -> GelocationResponse
+	4,  // 12: GelocationCommunicate.DirectionLocation:output_type -> DirectionLocationResponse
+	7,  // 13: GelocationCommunicate.OrderRoutes:output_type -> OrderRoutesResponse
+	11, // [11:14] is the sub-list for method output_type
+	8,  // [8:11] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_communicate_map_proto_init() }
@@ -511,6 +704,42 @@ func file_communicate_map_proto_init() {
 				return nil
 			}
 		}
+		file_communicate_map_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Routes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_communicate_map_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*OrderRoutesRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_communicate_map_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*OrderRoutesResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -518,7 +747,7 @@ func file_communicate_map_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_communicate_map_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -546,6 +775,7 @@ const _ = grpc.SupportPackageIsVersion6
 type GelocationCommunicateClient interface {
 	GetLocation(ctx context.Context, in *GelocationRequest, opts ...grpc.CallOption) (*GelocationResponse, error)
 	DirectionLocation(ctx context.Context, in *DirectionLocationRequest, opts ...grpc.CallOption) (*DirectionLocationResponse, error)
+	OrderRoutes(ctx context.Context, in *OrderRoutesRequest, opts ...grpc.CallOption) (*OrderRoutesResponse, error)
 }
 
 type gelocationCommunicateClient struct {
@@ -574,10 +804,20 @@ func (c *gelocationCommunicateClient) DirectionLocation(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *gelocationCommunicateClient) OrderRoutes(ctx context.Context, in *OrderRoutesRequest, opts ...grpc.CallOption) (*OrderRoutesResponse, error) {
+	out := new(OrderRoutesResponse)
+	err := c.cc.Invoke(ctx, "/GelocationCommunicate/OrderRoutes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GelocationCommunicateServer is the server API for GelocationCommunicate service.
 type GelocationCommunicateServer interface {
 	GetLocation(context.Context, *GelocationRequest) (*GelocationResponse, error)
 	DirectionLocation(context.Context, *DirectionLocationRequest) (*DirectionLocationResponse, error)
+	OrderRoutes(context.Context, *OrderRoutesRequest) (*OrderRoutesResponse, error)
 }
 
 // UnimplementedGelocationCommunicateServer can be embedded to have forward compatible implementations.
@@ -589,6 +829,9 @@ func (*UnimplementedGelocationCommunicateServer) GetLocation(context.Context, *G
 }
 func (*UnimplementedGelocationCommunicateServer) DirectionLocation(context.Context, *DirectionLocationRequest) (*DirectionLocationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectionLocation not implemented")
+}
+func (*UnimplementedGelocationCommunicateServer) OrderRoutes(context.Context, *OrderRoutesRequest) (*OrderRoutesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderRoutes not implemented")
 }
 
 func RegisterGelocationCommunicateServer(s *grpc.Server, srv GelocationCommunicateServer) {
@@ -631,6 +874,24 @@ func _GelocationCommunicate_DirectionLocation_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GelocationCommunicate_OrderRoutes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderRoutesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GelocationCommunicateServer).OrderRoutes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/GelocationCommunicate/OrderRoutes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GelocationCommunicateServer).OrderRoutes(ctx, req.(*OrderRoutesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _GelocationCommunicate_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "GelocationCommunicate",
 	HandlerType: (*GelocationCommunicateServer)(nil),
@@ -642,6 +903,10 @@ var _GelocationCommunicate_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DirectionLocation",
 			Handler:    _GelocationCommunicate_DirectionLocation_Handler,
+		},
+		{
+			MethodName: "OrderRoutes",
+			Handler:    _GelocationCommunicate_OrderRoutes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

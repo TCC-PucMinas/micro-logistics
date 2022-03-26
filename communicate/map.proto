@@ -9,7 +9,7 @@ message GelocationRequest {
   string country = 4;
   string state = 5;
   string number = 6;
-  string ZipCode = 7;
+  string zipCode = 7;
 }
 
 message GelocationResponse {
@@ -34,7 +34,24 @@ message DirectionLocationResponse {
   int64 Meters = 4;
 }
 
+message Routes {
+  LatAndLng origin = 1;
+  LatAndLng destiny = 2;
+  int64 idCourier = 3;
+  int64 order = 4;
+}
+
+
+message OrderRoutesRequest {
+  repeated Routes routes = 1;
+}
+
+message OrderRoutesResponse {
+  repeated Routes routes = 1;
+}
+
 service GelocationCommunicate {
   rpc GetLocation (GelocationRequest) returns (GelocationResponse) {};
   rpc DirectionLocation(DirectionLocationRequest) returns (DirectionLocationResponse) {}
+  rpc OrderRoutes(OrderRoutesRequest) returns (OrderRoutesResponse) {};
 }
