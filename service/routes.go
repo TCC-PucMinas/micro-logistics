@@ -52,7 +52,7 @@ func (r *Routes) TracingRoutes() error {
 	for _, v := range location.Routes {
 		routeAp := NewRoutes(r.courierRoute)
 		routeAp.courierRoute.Courier.Id = v.IdCourier
-		routeAp.courierRoute.Order = 1
+		routeAp.courierRoute.Order = v.Order
 		routeAp.courierRoute.LatInit.Lat = v.Origin.Lat
 		routeAp.courierRoute.LatInit.Lng = v.Origin.Lng
 		routeAp.courierRoute.LatFinish.Lat = v.Destiny.Lat
