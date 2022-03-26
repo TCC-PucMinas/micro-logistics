@@ -66,36 +66,24 @@ create table drivers (
 insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste', 'https://cdn-icons-png.flaticon.com/512/147/147144.png', 1, 1);
 
 
-
 create table couriers (
     id int unsigned auto_increment primary key,
     id_driver int unsigned not null,
+    id_deposit int unsigned not null,
+    id_client int unsigned not null,
     id_product int unsigned not null,
+    delivered boolean default false,
     FOREIGN KEY (id_driver) REFERENCES drivers(id),
+    FOREIGN KEY (id_deposit) REFERENCES deposits(id),
    `created_at` datetime default now()
-)
-
+);
 
 create table courier_routes(
     id int unsigned auto_increment primary key,
     id_courier int unsigned not null,
-    order int default 0,
-    latInit JSON default '{}',
-    latFinish JSON default '{}',
-    delivered boolean default false,
+    `order` int default 0,
+    `latInit` JSON not null,
+    `latFinish` JSON not null,
     FOREIGN KEY (id_courier) REFERENCES couriers(id),
    `created_at` datetime default now()
 );
-
-
-#
-# create table couriers (
-#     id int unsigned auto_increment primary key,
-#     id_driver int unsigned not null,
-# 	FOREIGN KEY (id_driver) REFERENCES drivers(id),
-#     id_product int unsigned not null,
-# 	FOREIGN KEY (id_product) REFERENCES products(id),
-#     `created_at` datetime default now()
-# );
-
---  Routas de entrega

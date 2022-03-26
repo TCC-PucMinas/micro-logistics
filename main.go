@@ -29,8 +29,6 @@ func main() {
 	communicate.RegisterDriverCommunicateServer(grpcServer, &controller.DriverServer{})
 	communicate.RegisterCourierCommunicateServer(grpcServer, &controller.CourierServer{})
 
-	// TODO:criar CRUD do Driver e validação de duplicação por nome!
-
 	fmt.Printf("[x] - Server logistic listen http://localhost:%v\n", port)
 
 	if err := grpcServer.Serve(listener); err != nil {

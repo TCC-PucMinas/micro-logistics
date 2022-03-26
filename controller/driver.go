@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 )
@@ -86,7 +85,6 @@ func (d *DriverServer) CreateDriver(ctx context.Context, request *communicate.Cr
 	}
 
 	if err := driver.CreateDriver(); err != nil {
-		log.Println("driver.creating", err)
 		return res, errors.New("Error creating driver!")
 	}
 

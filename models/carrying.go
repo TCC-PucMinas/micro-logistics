@@ -146,7 +146,7 @@ func (carrying *Carrying) CreateCarry() error {
 	return nil
 }
 
-func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([]Carrying, int64, error) {
+func (carrying *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([]Carrying, int64, error) {
 	var carryArray []Carrying
 	var total int64
 
@@ -195,4 +195,36 @@ func (carry *Carrying) GetCarryByNamePaginate(name string, page, limit int64) ([
 	}
 
 	return carryArray, total, nil
+}
+
+func (carrying *Carrying) GetCarryByDriverId(idDriver int64) error {
+
+	sql := db.ConnectDatabase()
+
+	query := `select id, name, street, district, city, country, state, number, lat, lng, zipCode  from carryings where id = ? limit 1;`
+
+	requestConfig, err := sql.Query(query, idDriver)
+
+	if err != nil {
+		return err
+	}
+
+	for requestConfig.Next() {
+		var id, name, street, district, city, country, state, number, lat, lng, zipCode string
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &zipCode)
+		i64, _ := strconv.ParseInt(id, 10, 64)
+		carrying.Id = i64
+		carrying.Name = name
+		carrying.Street = street
+		carrying.District = district
+		carrying.City = city
+		carrying.ZipCode = zipCode
+		carrying.Country = country
+		carrying.State = state
+		carrying.Number = number
+		carrying.Lat = lat
+		carrying.Lng = lng
+	}
+
+	return nil
 }

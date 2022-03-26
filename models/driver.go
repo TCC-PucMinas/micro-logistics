@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"log"
 	"micro-logistic/db"
 	"micro-logistic/helpers"
 )
@@ -21,7 +20,6 @@ func (driver *Driver) GetById(id int64) error {
 
 	query := `select id, name, image, id_carring, id_truck from drivers where id = ? limit 1;`
 
-	log.Println("id", id)
 	requestConfig, err := sql.Query(query, id)
 
 	if err != nil {

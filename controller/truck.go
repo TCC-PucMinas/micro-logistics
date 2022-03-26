@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 )
@@ -102,7 +101,6 @@ func (s *TruckServer) UpdateTruckById(ctx context.Context, request *communicate.
 	}
 
 	if err := truck.UpdateTruck(); err != nil {
-		log.Println("update", err)
 		return res, errors.New("Erro updating truck!")
 	}
 

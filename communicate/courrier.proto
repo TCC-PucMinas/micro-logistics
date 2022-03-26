@@ -6,6 +6,8 @@ message Courier {
     int64 id = 1;
     int64 idDriver = 2;
     int64 idProduct = 3;
+    int64 idClient = 4;
+    int64 idDeposit = 5;
 }
 
 message DataCourier {
@@ -26,8 +28,10 @@ message CourierListAllResponse {
 
 
 message CreateCourierRequest {
-    int64 id_driver = 1;
-    int64 id_product = 2;
+    int64 idDriver = 1;
+    int64 idProduct = 2;
+    int64 idClient = 4;
+    int64 idDeposit = 5;
 }
 
 message CreateCourierResponse {
@@ -46,6 +50,8 @@ message UpdateCourierByIdRequest{
     int64 id = 1;
     int64 idDriver = 2;
     int64 idProduct = 3;
+    int64 idClient = 4;
+    int64 idDeposit = 5;
 }
 
 message UpdateCourierByIdResponse {
@@ -60,7 +66,17 @@ message ListOneCourierByIdResponse {
     Courier courier = 1;
 }
 
+message CourierValidateRequest {
+    int64 idDriver = 1;
+    int64 idProduct = 2;
+}
+
+message CourierValidateResponse {
+    bool valid = 1;
+}
+
 service CourierCommunicate {
+    rpc ValidateCourier (CourierValidateRequest) returns (CourierValidateResponse) {};
     rpc CourierListAll (CourierListAllRequest) returns (CourierListAllResponse) {};
     rpc CreateCourier (CreateCourierRequest) returns (CreateCourierResponse) {};
     rpc ListOneCourierById (ListOneCourierByIdRequest) returns (ListOneCourierByIdResponse) {};
