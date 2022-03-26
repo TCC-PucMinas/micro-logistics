@@ -30,9 +30,9 @@ func (r *Routes) TracingRoutes() error {
 		return err
 	}
 
-	// if len(arrayCourierRoute) == 1 {
-	// 	return nil
-	// }
+	if len(arrayCourierRoute) == 1 {
+		return nil
+	}
 
 	for _, v := range arrayCourierRoute {
 		routeAp := Routes{}
