@@ -2,7 +2,9 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"micro-logistic/db"
+	"micro-logistic/helpers"
 )
 
 type LatAndLng struct {
@@ -47,6 +49,32 @@ func (courierRoute *CourierRoute) CreateCourierRoute() error {
 	return nil
 }
 
+func (courierRoute *CourierRoute) GetCourierRouteByIdCourier() error {
+
+	sql := db.ConnectDatabase()
+	query := "select id, id_courier, `order`, `latInit`, `latFinish` from courier_routes where id_courier = ?"
+
+	requestConfig, err := sql.Query(query, courierRoute.Courier.Id)
+
+	if err != nil {
+		return err
+	}
+
+	for requestConfig.Next() {
+		var latInit, latFinish string
+		var IdCourier, order, id int64
+		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish)
+		if id != 0 {
+			courierRoute.Id = id
+			courierRoute.LatInit.StringToStruct(latInit)
+			courierRoute.LatFinish.StringToStruct(latFinish)
+			courierRoute.Order = order
+			courierRoute.Courier.Id = IdCourier
+		}
+	}
+	return nil
+}
+
 func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
 	var courierRoutesArray []CourierRoute
 
@@ -74,6 +102,46 @@ func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
 		}
 	}
 	return courierRoutesArray, nil
+}
+
+func (courierRoute *CourierRoute) GetCourierRoutesPaginate(page, limit int64) ([]CourierRoute, int64, error) {
+	var courierRoutesArray []CourierRoute
+	var total int64
+
+	sql := db.ConnectDatabase()
+
+	paginate := helpers.Paginate{
+		Page:  page,
+		Limit: limit,
+	}
+
+	paginate.PaginateMounted()
+	paginate.MountedQuery("courier_routes")
+
+	query := fmt.Sprintf("select  id, id_courier, `order`, `latInit`, `latFinish`, %v from courier_routes order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
+
+	requestConfig, err := sql.Query(query, paginate.Limit, paginate.Page)
+
+	if err != nil {
+		return courierRoutesArray, total, err
+	}
+
+	for requestConfig.Next() {
+		courierRouteGet := CourierRoute{}
+		var latInit, latFinish string
+		var IdCourier, order, id int64
+		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish, &total)
+		if id != 0 {
+			courierRouteGet.Id = id
+			courierRouteGet.LatInit.StringToStruct(latInit)
+			courierRouteGet.LatFinish.StringToStruct(latFinish)
+			courierRouteGet.Order = order
+			courierRouteGet.Courier.Id = IdCourier
+			courierRoutesArray = append(courierRoutesArray, courierRouteGet)
+		}
+	}
+
+	return courierRoutesArray, total, nil
 }
 
 func (courierRoute *CourierRoute) UpdateByCourierId() error {

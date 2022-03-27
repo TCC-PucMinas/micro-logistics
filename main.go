@@ -28,6 +28,7 @@ func main() {
 	communicate.RegisterTruckCommunicateServer(grpcServer, &controller.TruckServer{})
 	communicate.RegisterDriverCommunicateServer(grpcServer, &controller.DriverServer{})
 	communicate.RegisterCourierCommunicateServer(grpcServer, &controller.CourierServer{})
+	communicate.RegisterCourierRouteCommunicateServer(grpcServer, &controller.CourierRoutes{})
 
 	fmt.Printf("[x] - Server logistic listen http://localhost:%v\n", port)
 
