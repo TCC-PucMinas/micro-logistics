@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"errors"
-	"log"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 	"micro-logistic/service"
@@ -78,7 +77,6 @@ func (s *CourierServer) CreateCourier(ctx context.Context, request *communicate.
 	id, err := courier.Create()
 
 	if err != nil {
-		log.Println(err)
 		return res, errors.New("Error creating courier!")
 	}
 

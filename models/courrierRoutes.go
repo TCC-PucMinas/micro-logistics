@@ -87,7 +87,7 @@ func (courierRoute *CourierRoute) UpdateByCourierId() error {
 		return err
 	}
 
-	_, e := destinationUpdate.Exec(courierRoute.Order, courierRoute.LatFinish.StructToString(), courierRoute.LatFinish.StructToString(), courierRoute.Courier.Id)
+	_, e := destinationUpdate.Exec(courierRoute.Order, courierRoute.LatInit.StructToString(), courierRoute.LatFinish.StructToString(), courierRoute.Courier.Id)
 
 	if e != nil {
 		return e

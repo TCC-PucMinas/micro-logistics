@@ -57,7 +57,7 @@ func (r *Routes) TracingRoutes() error {
 		routeAp.courierRoute.LatInit.Lng = v.Origin.Lng
 		routeAp.courierRoute.LatFinish.Lat = v.Destiny.Lat
 		routeAp.courierRoute.LatFinish.Lng = v.Destiny.Lng
-		go routeAp.courierRoute.UpdateByCourierId()
+		_ = routeAp.courierRoute.UpdateByCourierId()
 	}
 
 	return nil
