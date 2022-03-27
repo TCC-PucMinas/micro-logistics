@@ -122,11 +122,13 @@ func (s *CourierServer) UpdateCourierById(ctx context.Context, request *communic
 	}
 
 	courier = model.Courier{
-		Id:      request.Id,
-		Driver:  model.Driver{Id: request.IdDriver},
-		Product: model.Product{Id: request.IdProduct},
-		Client:  model.Client{Id: request.IdClient},
-		Deposit: model.Deposit{Id: request.IdDeposit},
+		Id:        request.Id,
+		Driver:    model.Driver{Id: request.IdDriver},
+		Product:   model.Product{Id: request.IdProduct},
+		Client:    model.Client{Id: request.IdClient},
+		Deposit:   model.Deposit{Id: request.IdDeposit},
+		Doc:       model.Documentation{Type: request.Doc.Type, Value: request.Doc.Value},
+		Delivered: request.Delivered,
 	}
 
 	if err := courier.UpdateById(); err != nil {

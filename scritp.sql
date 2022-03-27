@@ -73,6 +73,7 @@ create table couriers (
     id_client int unsigned not null,
     id_product int unsigned not null,
     delivered boolean default false,
+    doc JSON,
     FOREIGN KEY (id_driver) REFERENCES drivers(id),
     FOREIGN KEY (id_deposit) REFERENCES deposits(id),
    `created_at` datetime default now()

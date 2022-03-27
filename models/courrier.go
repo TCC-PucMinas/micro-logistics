@@ -1,18 +1,34 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"micro-logistic/db"
 	"micro-logistic/helpers"
 )
 
+type Documentation struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+func (l *Documentation) StructToString() string {
+	bytes, _ := json.Marshal(l)
+	return string(bytes)
+}
+
+func (l *Documentation) StringToStruct(val string) {
+	_ = json.Unmarshal([]byte(val), l)
+}
+
 type Courier struct {
-	Id        int64   `json:"id"`
-	Driver    Driver  `json:"driver"`
-	Deposit   Deposit `json:"deposit"`
-	Client    Client  `json:"client"`
-	Product   Product `json:"product"`
-	Delivered bool    `json:"delivered"`
+	Id        int64         `json:"id"`
+	Driver    Driver        `json:"driver"`
+	Deposit   Deposit       `json:"deposit"`
+	Client    Client        `json:"client"`
+	Product   Product       `json:"product"`
+	Delivered bool          `json:"delivered"`
+	Doc       Documentation `json:"doc"`
 }
 
 func (c *Courier) GetOneByIdDriverAndIdProduct(idDriver, idProduct int64) error {
@@ -44,7 +60,7 @@ func (c *Courier) GetById(id int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, id_driver, id_deposit, id_client, id_product from couriers where id = ? limit 1;`
+	query := `select id, id_driver, id_deposit, id_client, id_product, delivered, doc from couriers where id = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, id)
 
@@ -53,14 +69,18 @@ func (c *Courier) GetById(id int64) error {
 	}
 
 	for requestConfig.Next() {
+		var delivered bool
+		var doc string
 		var idDriver, idProduct, idClient, idDeposit, id int64
-		_ = requestConfig.Scan(&id, &idDriver, &idDeposit, &idClient, &idProduct)
+		_ = requestConfig.Scan(&id, &idDriver, &idDeposit, &idClient, &idProduct, &delivered, &doc)
 		if id != 0 {
 			c.Id = id
 			c.Driver.Id = idDriver
 			c.Client.Id = idClient
 			c.Deposit.Id = idDeposit
 			c.Product.Id = idProduct
+			c.Delivered = delivered
+			c.Doc.StringToStruct(doc)
 		}
 	}
 
@@ -90,7 +110,7 @@ func (c *Courier) DeleteById() error {
 func (c *Courier) UpdateById() error {
 	sql := db.ConnectDatabase()
 
-	query := "update couriers set id_driver = ?, id_deposit = ?, id_client = ?, id_product = ? where id = ?"
+	query := "update couriers set id_driver = ?, id_deposit = ?, id_client = ?, id_product = ?, delivered = ?, doc = ? where id = ?"
 
 	destinationUpdate, err := sql.Prepare(query)
 
@@ -98,7 +118,7 @@ func (c *Courier) UpdateById() error {
 		return err
 	}
 
-	_, e := destinationUpdate.Exec(c.Driver.Id, c.Deposit.Id, c.Client.Id, c.Product.Id, c.Id)
+	_, e := destinationUpdate.Exec(c.Driver.Id, c.Deposit.Id, c.Client.Id, c.Product.Id, c.Delivered, c.Doc.StructToString(), c.Id)
 
 	if e != nil {
 		return e

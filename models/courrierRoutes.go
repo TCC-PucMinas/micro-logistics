@@ -104,7 +104,7 @@ func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
 	return courierRoutesArray, nil
 }
 
-func (courierRoute *CourierRoute) GetCourierRoutesPaginate(page, limit int64) ([]CourierRoute, int64, error) {
+func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, page, limit int64) ([]CourierRoute, int64, error) {
 	var courierRoutesArray []CourierRoute
 	var total int64
 
@@ -118,9 +118,9 @@ func (courierRoute *CourierRoute) GetCourierRoutesPaginate(page, limit int64) ([
 	paginate.PaginateMounted()
 	paginate.MountedQuery("courier_routes")
 
-	query := fmt.Sprintf("select  id, id_courier, `order`, `latInit`, `latFinish`, %v from courier_routes order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
+	query := fmt.Sprintf("select cr.id, cr.id_courier, cr.`order`, cr.`latInit`, cr.`latFinish`, %v from courier_routes cr inner join couriers c on cr.id_courier = c.id where c.delivered = ? order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
 
-	requestConfig, err := sql.Query(query, paginate.Limit, paginate.Page)
+	requestConfig, err := sql.Query(query, delivered, paginate.Limit, paginate.Page)
 
 	if err != nil {
 		return courierRoutesArray, total, err

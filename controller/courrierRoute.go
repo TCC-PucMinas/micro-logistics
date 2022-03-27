@@ -13,7 +13,7 @@ func (s *CourierRoutes) CourierRouteListAll(ctx context.Context, request *commun
 
 	var courierRoute model.CourierRoute
 
-	arrayCourierRoute, total, err := courierRoute.GetCourierRoutesPaginate(request.Page, request.Limit)
+	arrayCourierRoute, total, err := courierRoute.GetCourierRoutesPaginate(request.Delivered, request.Page, request.Limit)
 
 	if err != nil {
 		return res, err
@@ -41,6 +41,8 @@ func (s *CourierRoutes) CourierRouteListAll(ctx context.Context, request *commun
 		courier.IdDeposit = courierGet.Deposit.Id
 		courier.IdDriver = courierGet.Driver.Id
 		courier.IdProduct = courierGet.Product.Id
+		courier.Delivered = courierGet.Delivered
+		courier.Doc = &communicate.Doc{Type: courierGet.Doc.Type, Value: courierGet.Doc.Value}
 		data.CourierRoute = append(data.CourierRoute, courier)
 	}
 
