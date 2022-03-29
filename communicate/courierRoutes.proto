@@ -2,8 +2,6 @@ syntax = "proto3";
 
 option go_package = "/communicate";
 
-
-
 message Doc {
     string type = 1;
     string value = 2;
@@ -12,9 +10,9 @@ message Doc {
 message CourieRouteAllRequest {
     int64 page = 1;
     int64 limit = 2;
-    bool delivered = 3;
+    int64 idDriver = 3;
+    bool delivered = 4;
 }
-
 
 message CourierRouteAllResponse {
     DataCourierRoute data = 1;
