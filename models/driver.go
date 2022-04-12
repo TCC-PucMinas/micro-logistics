@@ -130,24 +130,31 @@ func (driver *Driver) CreateDriver() error {
 	return nil
 }
 
-func (driver *Driver) GetDriverPaginateByNameAndIdCarry(name string, idCarry int64, page, limit int64) ([]Driver, int64, error) {
+func (driver *Driver) GetDriverPaginateByNameAndIdCarry(name string, idCarry, page, limit int64) ([]Driver, int64, error) {
 	var driverArray []Driver
 	var total int64
 
 	sql := db.ConnectDatabase()
+
+	name = "%" + name + "%"
+
+	var querySearch string
+
+	if idCarry != 0 {
+		querySearch = fmt.Sprintf("and id_carring = %v", idCarry)
+	}
 
 	paginate := helpers.Paginate{
 		Page:  page,
 		Limit: limit,
 	}
 
-	name = "%" + name + "%"
 	paginate.PaginateMounted()
 	paginate.MountedQuery("drivers")
 
-	query := fmt.Sprintf("select id, name, image, id_carring, id_truck, %v from drivers where name like ? and id_carring = ? LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf("select id, name, image, id_carring, id_truck, %v from drivers where name like ? %v LIMIT ? OFFSET ?;", paginate.Query, querySearch)
 
-	requestConfig, err := sql.Query(query, name, idCarry, paginate.Limit, paginate.Page)
+	requestConfig, err := sql.Query(query, name, paginate.Limit, paginate.Page)
 
 	if err != nil {
 		return driverArray, total, err

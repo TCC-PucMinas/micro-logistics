@@ -15,7 +15,7 @@ func (s *DepositServer) DepositListAll(ctx context.Context, request *communicate
 
 	var deposit model.Deposit
 
-	deposits, total, err := deposit.GetDepositByNamePaginate(request.Name, request.Page, request.Limit)
+	deposits, total, err := deposit.GetDepositByNamePaginate(request.Name, request.IdCarry, request.Page, request.Limit)
 
 	if err != nil {
 		return res, err
@@ -66,6 +66,7 @@ func (s *DepositServer) ListOneDepositById(ctx context.Context, request *communi
 	depositGet.Number = deposit.Number
 	depositGet.Lat = deposit.Lat
 	depositGet.Lng = deposit.Lng
+	depositGet.ZipCode = deposit.ZipCode
 	depositGet.IdCarry = deposit.Carrying.Id
 
 	res.Deposit = depositGet

@@ -28,7 +28,7 @@ func (deposit *Deposit) GetById(id int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, name, street, district, city, country, state, number, lat, lng, id_carry  from deposits where id = ? limit 1;`
+	query := `select id, name, street, district, city, country, state, number, zipCode, lat, lng, id_carry  from deposits where id = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, id)
 
@@ -37,9 +37,9 @@ func (deposit *Deposit) GetById(id int64) error {
 	}
 
 	for requestConfig.Next() {
-		var name, street, district, city, country, state, number, lat, lng string
+		var name, street, district, city, country, state, number, zipCode, lat, lng string
 		var idCarry, id int64
-		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &idCarry)
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &idCarry)
 		deposit.Id = id
 		deposit.Name = name
 		deposit.Street = street
@@ -49,6 +49,7 @@ func (deposit *Deposit) GetById(id int64) error {
 		deposit.State = state
 		deposit.Number = number
 		deposit.Lat = lat
+		deposit.ZipCode = zipCode
 		deposit.Lng = lng
 		deposit.Carrying.Id = idCarry
 	}
@@ -64,7 +65,7 @@ func (deposit *Deposit) GetByNameAndIdCarry(name string, idCarry int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, name, street, district, city, country, state, number, lat, lng, id_carry  from deposits where name = ? and id_carry = ? limit 1;`
+	query := `select id, name, street, district, city, country, state, number, zipCode, lat, lng, id_carry  from deposits where name = ? and id_carry = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, name, idCarry)
 
@@ -73,9 +74,9 @@ func (deposit *Deposit) GetByNameAndIdCarry(name string, idCarry int64) error {
 	}
 
 	for requestConfig.Next() {
-		var id, name, street, district, city, country, state, number, lat, lng string
+		var id, name, street, district, city, country, state, number, lat, lng, zipCode string
 		var idCarry int64
-		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &idCarry)
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &idCarry)
 		i64, _ := strconv.ParseInt(id, 10, 64)
 		deposit.Id = i64
 		deposit.Name = name
@@ -87,6 +88,7 @@ func (deposit *Deposit) GetByNameAndIdCarry(name string, idCarry int64) error {
 		deposit.Number = number
 		deposit.Lat = lat
 		deposit.Lng = lng
+		deposit.ZipCode = zipCode
 		deposit.Carrying.Id = idCarry
 	}
 
@@ -116,7 +118,7 @@ func (deposit *Deposit) DeleteById() error {
 func (deposit *Deposit) UpdateDepositById() error {
 	sql := db.ConnectDatabase()
 
-	query := "update deposits set `name` = ?, street = ?, district = ?, city = ?, country = ?, `state` = ?, `number` = ?, lat = ?, lng = ?, id_carry = ? where id = ?"
+	query := "update deposits set `name` = ?, street = ?, district = ?, city = ?, country = ?, `state` = ?, `number` = ?, zipCode = ?, lat = ?, lng = ?, id_carry = ? where id = ?"
 
 	destinationUpdate, err := sql.Prepare(query)
 
@@ -124,7 +126,7 @@ func (deposit *Deposit) UpdateDepositById() error {
 		return err
 	}
 
-	_, e := destinationUpdate.Exec(deposit.Name, deposit.Street, deposit.District, deposit.City, deposit.Country, deposit.State, deposit.Number, deposit.Lat, deposit.Lng, deposit.Carrying.Id, deposit.Id)
+	_, e := destinationUpdate.Exec(deposit.Name, deposit.Street, deposit.District, deposit.City, deposit.Country, deposit.State, deposit.Number, deposit.ZipCode, deposit.Lat, deposit.Lng, deposit.Carrying.Id, deposit.Id)
 
 	if e != nil {
 		return e
@@ -136,7 +138,7 @@ func (deposit *Deposit) UpdateDepositById() error {
 func (deposit *Deposit) CreateDeposit() error {
 	sql := db.ConnectDatabase()
 
-	query := "insert into deposits (`name`, street, district, city, country, `state`, `number`, lat, lng, id_carry) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	query := "insert into deposits (`name`, street, district, city, country, `state`, `number`, zipCode, lat, lng, id_carry) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 	createDestination, err := sql.Prepare(query)
 
@@ -144,7 +146,7 @@ func (deposit *Deposit) CreateDeposit() error {
 		return err
 	}
 
-	_, e := createDestination.Exec(deposit.Name, deposit.Street, deposit.District, deposit.City, deposit.Country, deposit.State, deposit.Number, deposit.Lat, deposit.Lng, deposit.Carrying.Id)
+	_, e := createDestination.Exec(deposit.Name, deposit.Street, deposit.District, deposit.City, deposit.Country, deposit.State, deposit.Number, deposit.ZipCode, deposit.Lat, deposit.Lng, deposit.Carrying.Id)
 
 	if e != nil {
 		return e
@@ -153,11 +155,17 @@ func (deposit *Deposit) CreateDeposit() error {
 	return nil
 }
 
-func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64) ([]Deposit, int64, error) {
+func (deposit *Deposit) GetDepositByNamePaginate(name string, idCarry, page, limit int64) ([]Deposit, int64, error) {
 	var depositArray []Deposit
 	var total int64
 
 	name = "%" + name + "%"
+
+	var querySearch string
+
+	if idCarry != 0 {
+		querySearch = fmt.Sprintf("and id_carry = %v", idCarry)
+	}
 
 	sql := db.ConnectDatabase()
 
@@ -169,7 +177,7 @@ func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64)
 	paginate.PaginateMounted()
 	paginate.MountedQuery("deposits")
 
-	query := fmt.Sprintf("select id, name, street, district, city, country, state, number, lat, lng, id_carry, %v from deposits where name like ? LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf("select id, name, street, district, city, country, state, number, zipCode, lat, lng, id_carry, %v from deposits where name like ? %v LIMIT ? OFFSET ?;", paginate.Query, querySearch)
 
 	requestConfig, err := sql.Query(query, name, paginate.Limit, paginate.Page)
 
@@ -179,9 +187,10 @@ func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64)
 
 	for requestConfig.Next() {
 		depositGet := Deposit{}
-		var name, street, district, city, country, state, number, lat, lng string
+		var name, street, district, city, country, state, number, lat, lng, zipCode string
 		var id, idCarry int64
-		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &lat, &lng, &idCarry, &total)
+		_ = requestConfig.Scan(&id, &name, &street, &district, &city, &country, &state, &number, &zipCode, &lat, &lng, &idCarry, &total)
+
 		if id != 0 {
 			depositGet.Id = id
 			depositGet.Name = name
@@ -191,6 +200,7 @@ func (deposit *Deposit) GetDepositByNamePaginate(name string, page, limit int64)
 			depositGet.Country = country
 			depositGet.State = state
 			depositGet.Number = number
+			depositGet.ZipCode = zipCode
 			depositGet.Lat = lat
 			depositGet.Lng = lng
 			depositGet.Carrying.Id = idCarry

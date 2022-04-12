@@ -24,11 +24,14 @@ func (s *CourierServer) CourierListAll(ctx context.Context, request *communicate
 	data := &communicate.DataCourier{}
 	for _, c := range arrayCourier {
 		courier := &communicate.Courier{}
+		deposit := model.Deposit{}
+		_ = deposit.GetById(c.Deposit.Id)
+		client, _ := service.ListOneClientById(c.Client.Id)
+		product, _ := service.ListOneProductById(c.Product.Id)
 		courier.Id = c.Id
-		courier.IdDriver = c.Driver.Id
-		courier.IdProduct = c.Product.Id
-		courier.IdDeposit = c.Deposit.Id
-		courier.IdClient = c.Client.Id
+		courier.Product = &communicate.ProductLg{Id: product.Product.Id, Name: product.Product.Name}
+		courier.Deposit = &communicate.DepositLg{Id: deposit.Id, Name: deposit.Name}
+		courier.Client = &communicate.ClientLg{Id: client.Client.Id, Name: client.Client.Name}
 		data.Courier = append(data.Courier, courier)
 	}
 
@@ -49,12 +52,17 @@ func (s *CourierServer) ListOneCourierById(ctx context.Context, request *communi
 		return res, errors.New("Courier not found!")
 	}
 
+	deposit := model.Deposit{}
+	_ = deposit.GetById(courier.Deposit.Id)
+	client, _ := service.ListOneClientById(courier.Client.Id)
+
+	product, _ := service.ListOneProductById(courier.Product.Id)
+
 	courierGet := &communicate.Courier{}
 	courierGet.Id = courier.Id
-	courierGet.IdDriver = courier.Driver.Id
-	courierGet.IdProduct = courier.Product.Id
-	courierGet.IdClient = courier.Client.Id
-	courierGet.IdDeposit = courier.Deposit.Id
+	courierGet.Product = &communicate.ProductLg{Id: product.Product.Id, Name: product.Product.Name}
+	courierGet.Client = &communicate.ClientLg{Id: client.Client.Id, Name: client.Client.Name}
+	courierGet.Deposit = &communicate.DepositLg{Id: deposit.Id, Name: deposit.Name}
 
 	res.Courier = courierGet
 
@@ -65,45 +73,19 @@ func (s *CourierServer) CreateCourier(ctx context.Context, request *communicate.
 	res := &communicate.CreateCourierResponse{}
 	courier := model.Courier{}
 
-	if err := courier.GetOneByIdDriverAndIdProduct(request.IdDriver, request.IdProduct); err != nil || courier.Id != 0 {
+	if err := courier.GetOneByIdDriverAndIdProduct(request.IdProduct); err != nil || courier.Id != 0 {
 		return res, errors.New("Not duplicated courier")
 	}
 
-	courier.Driver = model.Driver{Id: request.IdDriver}
 	courier.Product = model.Product{Id: request.IdProduct}
 	courier.Client = model.Client{Id: request.IdClient}
 	courier.Deposit = model.Deposit{Id: request.IdDeposit}
 
-	id, err := courier.Create()
+	_, err := courier.Create()
 
 	if err != nil {
 		return res, errors.New("Error creating courier!")
 	}
-
-	destiny, err := service.ListOneDestinationByIdProduct(request.IdProduct)
-
-	if err != nil {
-		return res, err
-	}
-
-	if err := courier.Deposit.GetById(request.IdDeposit); err != nil {
-		return res, err
-	}
-
-	courierRoute := model.CourierRoute{
-		Courier:   model.Courier{Id: id},
-		Order:     0,
-		LatInit:   model.LatAndLng{Lat: courier.Deposit.Lat, Lng: courier.Deposit.Lng},
-		LatFinish: model.LatAndLng{Lat: destiny.Destination.Lat, Lng: destiny.Destination.Lng},
-	}
-
-	if err := courierRoute.CreateCourierRoute(); err != nil {
-		return res, err
-	}
-
-	route := service.NewRoutes(&courierRoute)
-
-	go route.TracingRoutes()
 
 	res.Created = true
 
@@ -123,7 +105,6 @@ func (s *CourierServer) UpdateCourierById(ctx context.Context, request *communic
 
 	courier = model.Courier{
 		Id:        request.Id,
-		Driver:    model.Driver{Id: request.IdDriver},
 		Product:   model.Product{Id: request.IdProduct},
 		Client:    model.Client{Id: request.IdClient},
 		Deposit:   model.Deposit{Id: request.IdDeposit},
@@ -165,7 +146,7 @@ func (s *CourierServer) ValidateCourier(ctx context.Context, request *communicat
 
 	courier := model.Courier{}
 
-	if err := courier.GetOneByIdDriverAndIdProduct(request.IdDriver, request.IdProduct); err != nil || courier.Id != 0 {
+	if err := courier.GetOneByIdDriverAndIdProduct(request.IdProduct); err != nil || courier.Id != 0 {
 		return res, nil
 	}
 

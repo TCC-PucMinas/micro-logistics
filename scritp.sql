@@ -68,23 +68,43 @@ insert into drivers (name, image, id_carring, id_truck) values ('Motorista teste
 
 create table couriers (
     id int unsigned auto_increment primary key,
-    id_driver int unsigned not null,
     id_deposit int unsigned not null,
     id_client int unsigned not null,
     id_product int unsigned not null,
     delivered boolean default false,
     doc JSON,
-    FOREIGN KEY (id_driver) REFERENCES drivers(id),
     FOREIGN KEY (id_deposit) REFERENCES deposits(id),
    `created_at` datetime default now()
 );
 
+
 create table courier_routes(
     id int unsigned auto_increment primary key,
     id_courier int unsigned not null,
+    id_driver int unsigned not null,
     `order` int default 0,
     `latInit` JSON not null,
     `latFinish` JSON not null,
+    FOREIGN KEY (id_driver) REFERENCES drivers(id),
     FOREIGN KEY (id_courier) REFERENCES couriers(id),
    `created_at` datetime default now()
 );
+
+-- create table charges(
+--     id int unsigned auto_increment primary key,
+    
+--     `open` boolean default false,
+    
+--     `created_at` datetime default now()
+-- );
+
+-- create table charges_routes(
+--     id int unsigned auto_increment primary key,
+--     id_courier_route int unsigned not null,
+--     id_charge int unsigned not null,
+--     FOREIGN KEY (id_courier_route) REFERENCES courier_routes(id),
+--     FOREIGN KEY (id_charge) REFERENCES charges(id),
+--     `created_at` datetime default now()
+-- );
+
+

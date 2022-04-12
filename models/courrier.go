@@ -23,7 +23,6 @@ func (l *Documentation) StringToStruct(val string) {
 
 type Courier struct {
 	Id        int64         `json:"id"`
-	Driver    Driver        `json:"driver"`
 	Deposit   Deposit       `json:"deposit"`
 	Client    Client        `json:"client"`
 	Product   Product       `json:"product"`
@@ -31,24 +30,23 @@ type Courier struct {
 	Doc       Documentation `json:"doc"`
 }
 
-func (c *Courier) GetOneByIdDriverAndIdProduct(idDriver, idProduct int64) error {
+func (c *Courier) GetOneByIdDriverAndIdProduct(idProduct int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, id_driver, id_product from couriers where id_driver = ? and id_product = ? limit 1;`
+	query := `select id, id_product from couriers where id_product = ? limit 1;`
 
-	requestConfig, err := sql.Query(query, idDriver, idProduct)
+	requestConfig, err := sql.Query(query, idProduct)
 
 	if err != nil {
 		return err
 	}
 
 	for requestConfig.Next() {
-		var idDriver, idProduct, id int64
-		_ = requestConfig.Scan(&id, &idDriver, &idProduct)
+		var idProduct, id int64
+		_ = requestConfig.Scan(&id, &idProduct)
 		if id != 0 {
 			c.Id = id
-			c.Driver.Id = idDriver
 			c.Product.Id = idProduct
 		}
 	}
@@ -60,7 +58,7 @@ func (c *Courier) GetById(id int64) error {
 
 	sql := db.ConnectDatabase()
 
-	query := `select id, id_driver, id_deposit, id_client, id_product, delivered, doc from couriers where id = ? limit 1;`
+	query := `select id, id_deposit, id_client, id_product, delivered, doc from couriers where id = ? limit 1;`
 
 	requestConfig, err := sql.Query(query, id)
 
@@ -71,11 +69,10 @@ func (c *Courier) GetById(id int64) error {
 	for requestConfig.Next() {
 		var delivered bool
 		var doc string
-		var idDriver, idProduct, idClient, idDeposit, id int64
-		_ = requestConfig.Scan(&id, &idDriver, &idDeposit, &idClient, &idProduct, &delivered, &doc)
+		var idProduct, idClient, idDeposit, id int64
+		_ = requestConfig.Scan(&id, &idDeposit, &idClient, &idProduct, &delivered, &doc)
 		if id != 0 {
 			c.Id = id
-			c.Driver.Id = idDriver
 			c.Client.Id = idClient
 			c.Deposit.Id = idDeposit
 			c.Product.Id = idProduct
@@ -110,7 +107,7 @@ func (c *Courier) DeleteById() error {
 func (c *Courier) UpdateById() error {
 	sql := db.ConnectDatabase()
 
-	query := "update couriers set id_driver = ?, id_deposit = ?, id_client = ?, id_product = ?, delivered = ?, doc = ? where id = ?"
+	query := "update couriers set id_deposit = ?, id_client = ?, id_product = ?, delivered = ?, doc = ? where id = ?"
 
 	destinationUpdate, err := sql.Prepare(query)
 
@@ -118,7 +115,7 @@ func (c *Courier) UpdateById() error {
 		return err
 	}
 
-	_, e := destinationUpdate.Exec(c.Driver.Id, c.Deposit.Id, c.Client.Id, c.Product.Id, c.Delivered, c.Doc.StructToString(), c.Id)
+	_, e := destinationUpdate.Exec(c.Deposit.Id, c.Client.Id, c.Product.Id, c.Delivered, c.Doc.StructToString(), c.Id)
 
 	if e != nil {
 		return e
@@ -130,7 +127,7 @@ func (c *Courier) UpdateById() error {
 func (c *Courier) Create() (int64, error) {
 	sql := db.ConnectDatabase()
 
-	query := "insert into couriers (id, id_driver, id_deposit, id_client, id_product) values (?, ?, ?, ?, ?)"
+	query := "insert into couriers (id, id_deposit, id_client, id_product) values (?, ?, ?, ?)"
 
 	createDestination, err := sql.Prepare(query)
 
@@ -138,7 +135,7 @@ func (c *Courier) Create() (int64, error) {
 		return 0, err
 	}
 
-	result, e := createDestination.Exec(c.Id, c.Driver.Id, c.Deposit.Id, c.Client.Id, c.Product.Id)
+	result, e := createDestination.Exec(c.Id, c.Deposit.Id, c.Client.Id, c.Product.Id)
 
 	if e != nil {
 		return 0, e
@@ -151,7 +148,7 @@ func (c *Courier) GetCouriers() ([]Courier, error) {
 	var courierArray []Courier
 
 	sql := db.ConnectDatabase()
-	query := "select id, id_driver, id_deposit, id_client, id_product from couriers"
+	query := "select id, id_deposit, id_client, id_product from couriers"
 
 	requestConfig, err := sql.Query(query)
 
@@ -161,11 +158,10 @@ func (c *Courier) GetCouriers() ([]Courier, error) {
 
 	for requestConfig.Next() {
 		courierGet := Courier{}
-		var idDriver, idProduct, idClient, idDeposit, id int64
-		_ = requestConfig.Scan(&id, &idDriver, &idDeposit, &idClient, &idProduct)
+		var idProduct, idClient, idDeposit, id int64
+		_ = requestConfig.Scan(&id, &idDeposit, &idClient, &idProduct)
 		if id != 0 {
 			courierGet.Id = id
-			courierGet.Driver.Id = idDriver
 			courierGet.Product.Id = idProduct
 			courierGet.Deposit.Id = idDeposit
 			courierGet.Client.Id = idClient
@@ -190,7 +186,7 @@ func (c *Courier) GetCourierPaginate(page, limit int64) ([]Courier, int64, error
 	paginate.PaginateMounted()
 	paginate.MountedQuery("deposits")
 
-	query := fmt.Sprintf("select id, id_driver, id_deposit, id_client, id_product, %v from couriers LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf(`select id, id_deposit, id_client, id_product, %v  from couriers c LIMIT ? OFFSET ?;`, paginate.Query)
 
 	requestConfig, err := sql.Query(query, paginate.Limit, paginate.Page)
 
@@ -200,11 +196,10 @@ func (c *Courier) GetCourierPaginate(page, limit int64) ([]Courier, int64, error
 
 	for requestConfig.Next() {
 		courierGet := Courier{}
-		var idDriver, idProduct, idClient, idDeposit, id int64
-		_ = requestConfig.Scan(&id, &idDriver, &idDeposit, &idClient, &idProduct, &total)
+		var idProduct, idClient, idDeposit, id int64
+		_ = requestConfig.Scan(&id, &idDeposit, &idClient, &idProduct, &total)
 		if id != 0 {
 			courierGet.Id = id
-			courierGet.Driver.Id = idDriver
 			courierGet.Product.Id = idProduct
 			courierGet.Deposit.Id = idDeposit
 			courierGet.Client.Id = idClient

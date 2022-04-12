@@ -104,11 +104,13 @@ func (truck *Truck) CreateTruck() error {
 	return nil
 }
 
-func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) ([]Truck, int64, error) {
+func (truck *Truck) GetTruckByIdCarryPaginate(plate string, idCarry, page, limit int64) ([]Truck, int64, error) {
 	var truckArray []Truck
 	var total int64
 
 	sql := db.ConnectDatabase()
+
+	plate = "%" + plate + "%"
 
 	paginate := helpers.Paginate{
 		Page:  page,
@@ -118,9 +120,9 @@ func (truck *Truck) GetTruckByIdCarryPaginate(idCarry int64, page, limit int64) 
 	paginate.PaginateMounted()
 	paginate.MountedQuery("trucks")
 
-	query := fmt.Sprintf("select id, brand, model, year, plate, id_carry, %v from trucks where id_carry = ? LIMIT ? OFFSET ?;", paginate.Query)
+	query := fmt.Sprintf("select id, brand, model, year, plate, id_carry, %v from trucks where id_carry = ? and plate like ? LIMIT ? OFFSET ?;", paginate.Query)
 
-	requestConfig, err := sql.Query(query, idCarry, paginate.Limit, paginate.Page)
+	requestConfig, err := sql.Query(query, idCarry, plate, paginate.Limit, paginate.Page)
 
 	if err != nil {
 		return truckArray, total, err

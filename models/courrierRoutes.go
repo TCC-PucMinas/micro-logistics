@@ -22,9 +22,10 @@ func (l *LatAndLng) StringToStruct(val string) {
 }
 
 type CourierRoute struct {
-	Id        int64     `json:"id"`
-	Courier   Courier   `json:"courier"`
-	Order     int64     `json:"order"`
+	Id        int64   `json:"id"`
+	Courier   Courier `json:"courier"`
+	Order     int64   `json:"order"`
+	Driver    Driver
 	LatInit   LatAndLng `json:"lat_init"`
 	LatFinish LatAndLng `json:"lat_finish"`
 }
@@ -32,7 +33,7 @@ type CourierRoute struct {
 func (courierRoute *CourierRoute) CreateCourierRoute() error {
 	sql := db.ConnectDatabase()
 
-	query := "insert into courier_routes (id_courier, `order`, `latInit`, `latFinish`) values (?, ?, ?, ?)"
+	query := "insert into courier_routes (id_courier, `order`, `latInit`, `latFinish`, id_driver) values (?, ?, ?, ?, ?)"
 
 	createDestination, err := sql.Prepare(query)
 
@@ -40,7 +41,7 @@ func (courierRoute *CourierRoute) CreateCourierRoute() error {
 		return err
 	}
 
-	_, e := createDestination.Exec(courierRoute.Courier.Id, courierRoute.Order, courierRoute.LatInit.StructToString(), courierRoute.LatFinish.StructToString())
+	_, e := createDestination.Exec(courierRoute.Courier.Id, courierRoute.Order, courierRoute.LatInit.StructToString(), courierRoute.LatFinish.StructToString(), courierRoute.Driver.Id)
 
 	if e != nil {
 		return e
@@ -49,10 +50,37 @@ func (courierRoute *CourierRoute) CreateCourierRoute() error {
 	return nil
 }
 
+func (courierRoute *CourierRoute) GetCourierRouteById(id int64) error {
+
+	sql := db.ConnectDatabase()
+	query := "select id, id_courier, `order`, `latInit`, `latFinish`, id_driver from courier_routes where id = ?"
+
+	requestConfig, err := sql.Query(query, id)
+
+	if err != nil {
+		return err
+	}
+
+	for requestConfig.Next() {
+		var latInit, latFinish string
+		var IdCourier, order, id, idDriver int64
+		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish, &idDriver)
+		if id != 0 {
+			courierRoute.Id = id
+			courierRoute.LatInit.StringToStruct(latInit)
+			courierRoute.LatFinish.StringToStruct(latFinish)
+			courierRoute.Order = order
+			courierRoute.Driver.Id = idDriver
+			courierRoute.Courier.Id = IdCourier
+		}
+	}
+	return nil
+}
+
 func (courierRoute *CourierRoute) GetCourierRouteByIdCourier() error {
 
 	sql := db.ConnectDatabase()
-	query := "select id, id_courier, `order`, `latInit`, `latFinish` from courier_routes where id_courier = ?"
+	query := "select id, id_courier, `order`, `latInit`, `latFinish`, id_driver from courier_routes where id_courier = ?"
 
 	requestConfig, err := sql.Query(query, courierRoute.Courier.Id)
 
@@ -62,13 +90,14 @@ func (courierRoute *CourierRoute) GetCourierRouteByIdCourier() error {
 
 	for requestConfig.Next() {
 		var latInit, latFinish string
-		var IdCourier, order, id int64
-		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish)
+		var IdCourier, order, id, idDriver int64
+		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish, &idDriver)
 		if id != 0 {
 			courierRoute.Id = id
 			courierRoute.LatInit.StringToStruct(latInit)
 			courierRoute.LatFinish.StringToStruct(latFinish)
 			courierRoute.Order = order
+			courierRoute.Driver.Id = idDriver
 			courierRoute.Courier.Id = IdCourier
 		}
 	}
@@ -118,7 +147,7 @@ func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, page,
 	paginate.PaginateMounted()
 	paginate.MountedQuery("courier_routes")
 
-	query := fmt.Sprintf("select cr.id, cr.id_courier, cr.`order`, cr.`latInit`, cr.`latFinish`, %v from courier_routes cr inner join couriers c on cr.id_courier = c.id where c.delivered = ? order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
+	query := fmt.Sprintf("select cr.id, cr.id_courier, cr.`order`, cr.`latInit`, cr.`latFinish`, id_driver, %v from courier_routes cr inner join couriers c on cr.id_courier = c.id where c.delivered = ? order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
 
 	requestConfig, err := sql.Query(query, delivered, paginate.Limit, paginate.Page)
 
@@ -129,8 +158,8 @@ func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, page,
 	for requestConfig.Next() {
 		courierRouteGet := CourierRoute{}
 		var latInit, latFinish string
-		var IdCourier, order, id int64
-		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish, &total)
+		var IdCourier, order, id, idDriver int64
+		_ = requestConfig.Scan(&id, &IdCourier, &order, &latInit, &latFinish, &idDriver, &total)
 		if id != 0 {
 			courierRouteGet.Id = id
 			courierRouteGet.LatInit.StringToStruct(latInit)

@@ -10,8 +10,7 @@ message Doc {
 message CourieRouteAllRequest {
     int64 page = 1;
     int64 limit = 2;
-    int64 idDriver = 3;
-    bool delivered = 4;
+    bool delivered = 3;
 }
 
 message CourierRouteAllResponse {
@@ -39,19 +38,57 @@ message Route {
     Coordenates finish = 5;
 }
 
-message CourierRoutes {
+
+message ClientCr {
     int64 id = 1;
-    int64 idDriver = 2;
-    int64 idProduct = 3;
-    int64 idClient = 4;
-    int64 idDeposit = 5;
-    bool delivered = 6;
-    Doc doc = 7;
-    Route route = 8;
+    string name = 2;
 }
 
+message DepositCr {
+    int64 id = 1;
+    string name = 2;
+}
+
+message ProductCr {
+  int64 id = 1;
+  string name = 2;
+}
+
+
+message CourierRoutes {
+    int64 id = 1;
+    ProductCr Product = 2;
+    ClientCr Client = 3;
+    DepositCr Deposit = 4;
+    bool delivered = 5;
+    Doc doc = 6;
+    Route route = 7;
+}
+
+message Courriers {
+    int64 id = 1;
+}
+
+message CreateCourierRoutesRequest {
+    int64 idDriver = 1;
+    repeated Courriers courriers = 2;
+}
+
+message CreateCourierRoutesResponse {
+    bool Created = 1;
+}
+
+message CourierRouteListOneRequest {
+    int64 id = 1;
+}
+
+message CourierRouteListOneResponse {
+    CourierRoutes courier_route = 1;
+}
 
 
 service CourierRouteCommunicate {
     rpc CourierRouteListAll (CourieRouteAllRequest) returns (CourierRouteAllResponse) {};
+    rpc CreateCorrierRoute (CreateCourierRoutesRequest) returns (CreateCourierRoutesResponse) {}
+    rpc CourierRouteListOne (CourierRouteListOneRequest) returns (CourierRouteListOneResponse) {};
 }

@@ -14,7 +14,7 @@ func (s *TruckServer) TruckListAll(ctx context.Context, request *communicate.Tru
 
 	var truck model.Truck
 
-	trucks, total, err := truck.GetTruckByIdCarryPaginate(request.IdCarry, request.Page, request.Limit)
+	trucks, total, err := truck.GetTruckByIdCarryPaginate(request.Plate, request.IdCarry, request.Page, request.Limit)
 
 	if err != nil {
 		return res, err

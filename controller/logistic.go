@@ -20,7 +20,7 @@ func (s *LogisticServer) CalculateLogistic(ctx context.Context, request *communi
 		return res, errors.New("Id invalid!")
 	}
 
-	if err := service.ValidateClientById(request.IdClient); err != nil {
+	if _, err := service.ValidateClientById(request.IdClient); err != nil {
 		return res, errors.New("Id Client invalid!")
 	}
 

@@ -19,6 +19,7 @@ message TruckListAllRequest {
     int64 page = 1;
     int64 limit = 2;
     int64 idCarry = 3;
+    string plate = 4;
 }
 
 message TruckListAllResponse {
