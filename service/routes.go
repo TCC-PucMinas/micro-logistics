@@ -21,10 +21,10 @@ func NewRoutes(courier *model.CourierRoute) *Routes {
 	return &Routes{courierRoute: courier}
 }
 
-func (r *Routes) TracingRoutes() error {
+func (r *Routes) TracingRoutes(idDriver int64) error {
 	var arrayRoutes []Routes
 
-	arrayCourierRoute, err := r.courierRoute.GetCourierRoutes()
+	arrayCourierRoute, err := r.courierRoute.GetCourierRoutes(idDriver)
 
 	if err != nil {
 		return err

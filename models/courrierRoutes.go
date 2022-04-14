@@ -104,13 +104,13 @@ func (courierRoute *CourierRoute) GetCourierRouteByIdCourier() error {
 	return nil
 }
 
-func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
+func (courierRoute *CourierRoute) GetCourierRoutes(idDriver int64) ([]CourierRoute, error) {
 	var courierRoutesArray []CourierRoute
 
 	sql := db.ConnectDatabase()
-	query := "select id, id_courier, `order`, `latInit`, `latFinish` from courier_routes"
+	query := "select id, id_courier, `order`, `latInit`, `latFinish` from courier_routes where id_driver = ?"
 
-	requestConfig, err := sql.Query(query)
+	requestConfig, err := sql.Query(query, idDriver)
 
 	if err != nil {
 		return courierRoutesArray, err
@@ -133,7 +133,7 @@ func (courierRoute *CourierRoute) GetCourierRoutes() ([]CourierRoute, error) {
 	return courierRoutesArray, nil
 }
 
-func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, page, limit int64) ([]CourierRoute, int64, error) {
+func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, idDriver, page, limit int64) ([]CourierRoute, int64, error) {
 	var courierRoutesArray []CourierRoute
 	var total int64
 
@@ -147,9 +147,9 @@ func (courierRoute *CourierRoute) GetCourierRoutesPaginate(delivered bool, page,
 	paginate.PaginateMounted()
 	paginate.MountedQuery("courier_routes")
 
-	query := fmt.Sprintf("select cr.id, cr.id_courier, cr.`order`, cr.`latInit`, cr.`latFinish`, id_driver, %v from courier_routes cr inner join couriers c on cr.id_courier = c.id where c.delivered = ? order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
+	query := fmt.Sprintf("select cr.id, cr.id_courier, cr.`order`, cr.`latInit`, cr.`latFinish`, id_driver, %v from courier_routes cr inner join couriers c on cr.id_courier = c.id where c.delivered = ? and id_driver = ? order by `order` asc  LIMIT ? OFFSET ?", paginate.Query)
 
-	requestConfig, err := sql.Query(query, delivered, paginate.Limit, paginate.Page)
+	requestConfig, err := sql.Query(query, delivered, idDriver, paginate.Limit, paginate.Page)
 
 	if err != nil {
 		return courierRoutesArray, total, err
@@ -185,6 +185,26 @@ func (courierRoute *CourierRoute) UpdateByCourierId() error {
 	}
 
 	_, e := destinationUpdate.Exec(courierRoute.Order, courierRoute.LatInit.StructToString(), courierRoute.LatFinish.StructToString(), courierRoute.Courier.Id)
+
+	if e != nil {
+		return e
+	}
+
+	return nil
+}
+
+func (courierRoute *CourierRoute) DeleteCourierRouteById(id int64) error {
+	sql := db.ConnectDatabase()
+
+	query := "delete from courier_routes where id = ?"
+
+	destinationUpdate, err := sql.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	_, e := destinationUpdate.Exec(id)
 
 	if e != nil {
 		return e

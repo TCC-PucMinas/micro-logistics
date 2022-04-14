@@ -2,7 +2,7 @@ package controller
 
 import (
 	"context"
-	"log"
+	"errors"
 	"micro-logistic/communicate"
 	model "micro-logistic/models"
 	"micro-logistic/service"
@@ -15,7 +15,7 @@ func (s *CourierRoutes) CourierRouteListAll(ctx context.Context, request *commun
 
 	var courierRoute model.CourierRoute
 
-	arrayCourierRoute, total, err := courierRoute.GetCourierRoutesPaginate(request.Delivered, request.Page, request.Limit)
+	arrayCourierRoute, total, err := courierRoute.GetCourierRoutesPaginate(request.Delivered, request.IdDriver, request.Page, request.Limit)
 
 	if err != nil {
 		return res, err
@@ -63,7 +63,6 @@ func (s *CourierRoutes) CourierRouteListAll(ctx context.Context, request *commun
 
 func (s *CourierRoutes) CreateCorrierRoute(ctx context.Context, request *communicate.CreateCourierRoutesRequest) (*communicate.CreateCourierRoutesResponse, error) {
 
-	log.Println(request.IdDriver)
 	res := &communicate.CreateCourierRoutesResponse{}
 
 	for _, v := range request.Courriers {
@@ -89,7 +88,7 @@ func (s *CourierRoutes) CreateCorrierRoute(ctx context.Context, request *communi
 		}
 
 		if err := courierRoute.GetCourierRouteByIdCourier(); err != nil || courierRoute.Id > 0 {
-			continue
+			return res, errors.New("Courrier duplicated")
 		}
 
 		courierRoute = model.CourierRoute{
@@ -106,7 +105,9 @@ func (s *CourierRoutes) CreateCorrierRoute(ctx context.Context, request *communi
 
 		route := service.NewRoutes(&courierRoute)
 
-		_ = route.TracingRoutes()
+		if err := route.TracingRoutes(request.IdDriver); err != nil {
+			return res, err
+		}
 	}
 
 	res.Created = true
@@ -150,6 +151,33 @@ func (s *CourierRoutes) CourierRouteListOne(ctx context.Context, request *commun
 	}
 
 	res.CourierRoute = returnResponse
+
+	return res, nil
+}
+
+func (s *CourierRoutes) DeleteCourierRouteById(ctx context.Context, request *communicate.DeleteCourierRouteRequest) (*communicate.DeleteCourierRouteResponse, error) {
+
+	res := &communicate.DeleteCourierRouteResponse{
+		Deleted: false,
+	}
+	courierRoute := model.CourierRoute{}
+	courierRouteGet := model.CourierRoute{}
+
+	if err := courierRouteGet.GetCourierRouteById(request.Id); err != nil || courierRouteGet.Id == 0 {
+		return res, nil
+	}
+
+	if err := courierRoute.DeleteCourierRouteById(request.Id); err != nil {
+		return res, err
+	}
+
+	route := service.NewRoutes(&courierRouteGet)
+
+	if err := route.TracingRoutes(courierRouteGet.Driver.Id); err != nil {
+		return res, err
+	}
+
+	res.Deleted = true
 
 	return res, nil
 }
